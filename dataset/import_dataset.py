@@ -1,5 +1,6 @@
 from datasets import load_dataset
 import pandas as pd
+import os
 
 # ------------------------------
 # 1️⃣ CardiffNLP TweetEval: solo neutrales
@@ -66,5 +67,9 @@ print(combined['label'].value_counts())
 # ------------------------------
 # 6️⃣ Guardar CSV
 # ------------------------------
-combined.to_csv("twitter_combined_custom_100k.csv", index=False)
-print("Dataset combinado listo: twitter_combined_custom_100k.csv")
+# Define your specific folder path here
+output_dir = os.path.dirname(os.path.abspath(__file__))
+output_path = os.path.join(output_dir, "twitter_combined.csv")
+
+combined.to_csv(output_path, index=False)
+print(f"Dataset combinado listo: {output_path}")
