@@ -23,7 +23,7 @@ lemmatizer = WordNetLemmatizer()
 
 # --- Cargar dataset ---
 df = pd.read_csv(
-    "twitter_balanced_train.csv"
+    "twitter_balancedNOCLEAN.csv"
 )
 
 
@@ -38,10 +38,56 @@ def lemmatize_text(text):
 
 
 
-def remove_duplicates(df: pd.DataFrame, subset_cols=['text']) -> pd.DataFrame:
-    """Elimina duplicados"""
-    df.drop_duplicates(subset=subset_cols, keep='first', inplace=True)
-    return df
+def remove_duplicates(df: pd.DataFrame,
+                          text_col: str = 'text',
+                          label_col: str = 'label',
+                          n_examples: int = 3) -> pd.DataFrame:
+    """
+    - Troba textos duplicats.
+    - Si un text té més d'una etiqueta diferent, s'eliminen TOTES les seves files.
+    - Si un text té sempre la mateixa etiqueta, només es deixa una fila (text, label).
+    - Imprimeix 3 exemples de cada cas.
+    """
+    # Files que comparteixen el mateix text
+    dup_mask = df.duplicated(subset=[text_col], keep=False)
+    dup_df = df[dup_mask]
+
+    if label_col not in df.columns or dup_df.empty:
+        print("[INFO] No s'ha trobat columna de label o no hi ha duplicats.")
+        # En aquest cas, simplement traiem duplicats per text
+        return df.drop_duplicates(subset=[text_col], keep='first').reset_index(drop=True)
+
+    # Comptem quantes etiquetes diferents té cada text duplicat
+    label_counts = dup_df.groupby(text_col)[label_col].nunique()
+    same_texts = label_counts[label_counts == 1].index      # textos duplicats amb una sola etiqueta
+    conflict_texts = label_counts[label_counts > 1].index   # textos amb etiquetes diferents
+
+    print(f"[INFO] Duplicats amb la mateixa etiqueta (textos): {len(same_texts)}")
+    print(f"[INFO] Duplicats amb etiquetes diferents (textos): {len(conflict_texts)}")
+
+    # --- Exemples: duplicats amb la mateixa etiqueta ---
+    print("\n[EXEMPLES] Duplicats amb la mateixa etiqueta (abans d'eliminar):")
+    for text_val in list(same_texts[:n_examples]):
+        sample = dup_df[dup_df[text_col] == text_val][[text_col, label_col]].head()
+        print("----")
+        print(sample.to_string(index=False))
+
+    # --- Exemples: duplicats amb etiquetes diferents ---
+    print("\n[EXEMPLES] Duplicats amb etiquetes diferents (abans d'eliminar):")
+    for text_val in list(conflict_texts[:n_examples]):
+        sample = dup_df[dup_df[text_col] == text_val][[text_col, label_col]].drop_duplicates().head()
+        print("----")
+        print(sample.to_string(index=False))
+
+    # 1) Eliminar del dataframe tots els textos conflictius (més d'una etiqueta)
+    df_clean = df[~df[text_col].isin(conflict_texts)].copy()
+
+    # 2) Per la resta (incloent els "same_texts"), eliminar duplicats text+label,
+    #    de manera que en quedi només un per cada (text, etiqueta).
+    df_clean = df_clean.drop_duplicates(subset=[text_col, label_col], keep='first')
+
+    df_clean = df_clean.reset_index(drop=True)
+    return df_clean
 
 
 def lowercase_strip(text: str) -> str:
@@ -49,7 +95,7 @@ def lowercase_strip(text: str) -> str:
       elimina espacios al inicio y al final. """
     return text.lower().strip()
 
-def remove_empty_texts(df, column='text'):
+def remove_empty_texts(df: pd.DataFrame, column='text') -> pd.DataFrame:
     """
     Remove rows where the text column is NaN or empty after stripping spaces.
     """
@@ -65,60 +111,109 @@ def remove_punctuation_space(text: str) -> str:
     Elimina signos de puntuación y sustituye por espacios.
     """
     # Puntuación a eliminar: guiones, comas, puntos, signos de interrogación/exclamación
-    PUNCTUATION = re.compile(r'[-,.!?;:…]+')
+    PUNCTUATION = re.compile(r'[.,!?;:…\"\'\-_/\\()#]+')
     # Sustituimos por espacio y convertimos a minúsculas
     return PUNCTUATION.sub(" ", text.lower())
 
-def fix_abbr_en(x):
+def fix_abbr_en(text: str) -> str:
     """
-    Expande abreviaciones comunes en inglés de tweets/mensajes.
+    Expande abreviaciones comunes en inglés de tweets/mensajes,
+    basadas en las más frecuentes de tu dataset.
     """
-    if isinstance(x, list):
-        words = x
-    elif isinstance(x, str):
-        words = x.split()
+    if isinstance(text, list):
+        words = text
+    elif isinstance(text, str):
+        words = text.split()
     else:
         raise TypeError('Input must be a string or a list of words.')
 
     abbrevs = {
+        # Pronoms / paraules curtes típiques
         "u": "you",
-        "r": "are",
         "ur": "your",
+        "r": "are",
+        "ya": "you",
+        "&":"and",
+
+        # Contractions sense apòstrof
+        "im": "i am",
+        "ive": "i have",
+        "dont": "do not",
+        "cant": "can not",
+        "wont": "will not",
+        "isnt": "is not",
+        "shes": "she is",
+        "hes": "he is",
+
+        # Slang / xat
         "lol": "laughing out loud",
-        "idk": "I do not know",
-        "btw": "by the way",
+        "lmao": "laughing my ass off",
+        "rofl": "rolling on the floor laughing",
         "omg": "oh my god",
+        "omfg": "oh my fucking god",
+        "idk": "i do not know",
+        "btw": "by the way",
+
         "thx": "thanks",
+        "thks": "thanks",
         "pls": "please",
         "plz": "please",
+
         "gr8": "great",
         "b4": "before",
         "l8r": "later",
+
+        "imo": "in my opinion",
         "imho": "in my humble opinion",
+        "tbh": "to be honest",
         "smh": "shaking my head",
-        "tbh": "to be honest"
+
+        "ily": "i love you",
+        "brb": "be right back",
+        "gtg": "got to go",
+        "rn": "right now",
+        "ikr": "i know right",
+        "idc": "i do not care",
     }
 
-    return " ".join([abbrevs[word.lower()] if word.lower() in abbrevs else word for word in words])
+    return " ".join(
+        abbrevs.get(word.lower(), word)
+        for word in words
+    )
 
 import re
 
-def replace_links(text):
+def replace_links(text: str) -> str:
     # Patrón para detectar cualquier link común
     url_pattern = r'(http[s]?://\S+|www\.\S+|\S+\.ly/\S+)'
     return re.sub(url_pattern, '{link}', text)
 
 
 
-def remove_repeated_vowels(text):
+def normalize_repeated_chars(text: str,
+                             min_repeats: int = 3,
+                             keep: int = 2) -> str:
     """
-    Elimina vocales consecutivas repetidas en cada palabra de un texto.
-    Ej: "holaaa" -> "hola", "greeeaaaat" -> "great"
+    Normaliza repeticiones excesivas de caracteres:
+    - Solo toca secuencias de >= min_repeats del mismo carácter.
+    - Las reduce a 'keep' repeticiones (por defecto 2).
+
+    Ejemplos:
+        "holaaaa"   -> "holaa"
+        "goooood"   -> "good"
+        "soooo"     -> "soo"
+        "hmmmmmm"   -> "hmm"
+        "sisterrrr" -> "sisterr"
+
+    No toca:
+        "good", "see", "cool" (porque solo tienen 2 letras iguales)
     """
-    return re.sub(r'([aeiou])\1+', r'\1', text, flags=re.IGNORECASE)
+    # (.)\1{2,} = un carácter seguido de sí mismo al menos 2 veces más (total 3 o más)
+    pattern = re.compile(r'(.)\1{' + str(min_repeats - 1) + ',}')
 
+    return pattern.sub(lambda m: m.group(1) * keep, text)
 
-def normalize_laughs_en(text):
+def normalize_laughs_en(text: str) -> str:
     """
     Normaliza risas escritas en inglés en un texto.
     Ejemplos:
@@ -146,15 +241,7 @@ def normalize_laughs_en(text):
     return " ".join(normalized)
 
 
-def remove_hashtag_symbol(text):
-    """
-    Quita el símbolo # pero deja la palabra.
-    Ejemplo: #HappyDay -> HappyDay
-    """
-    return " ".join([word[1:] if word.startswith("#") else word for word in text.split()])
-
-
-def remove_mentions(text):
+def remove_mentions(text: str) -> str:
     """
     Sustituye menciones de usuario por {mention}.
     Ejemplo: @john -> {mention}
@@ -162,20 +249,8 @@ def remove_mentions(text):
     return " ".join(['{mention}' if word.startswith('@') else word for word in text.split()])
 
 
-# Función para corregir palabras en inglés
-from spellchecker import SpellChecker
 
-spell = SpellChecker(language='en', distance=1)
-
-def correcting_words_en(text):
-    misspelled = spell.unknown(text.split())
-    return " ".join([
-        (spell.correction(word) if word in misspelled else word) or word
-        for word in text.split()
-    ])
-
-
-def remove_currency(text):
+def remove_currency(text: str) -> str:
     """
     Replaces mentions of money symbols or currency words with {money}.
     Detects: €, $, £, yen, pound, euro, dollar
@@ -185,31 +260,32 @@ def remove_currency(text):
     return " ".join(wlist)
 
 
-def remove_special_characters(text):
+def remove_special_characters(text: str) -> str:
     # Mantener solo letras, números y espacios
-    return re.sub(r'[^a-zA-Z0-9\s]', '', text)
+    return re.sub(r'[^a-zA-Z0-9\s{}]', '', text)
 
 
 
 
 
-def remove_obvious_spam(df, column='text', max_unique_words=2, min_length=20):
+def mark_obvious_spam(df: pd.DataFrame, column: str = 'text',
+                      max_unique_words: int = 2, min_length: int = 20) -> pd.DataFrame:
     """
-    Remove obvious spam: texts with too few unique words and above a minimum length.
-    
-    Parameters:
-    - df: DataFrame
-    - column: name of the text column
-    - max_unique_words: maximum number of unique words allowed (texts with <= this number are spam)
-    - min_length: minimum text length to consider (texts shorter than this are ignored)
+    Marca com a 'spam' els textos amb molt poques paraules úniques i longitud prou gran.
+    En comptes de crear cap columna nova, afegeix el token '{spam}' al text original
+    quan compleix el criteri.
     """
-    df['is_spam'] = df[column].apply(
-        lambda t: 1 if (len(set(t.split())) <= max_unique_words and len(t) > min_length) else 0
+    def is_spam(t: str) -> bool:
+        words = t.split()
+        return (len(set(words)) <= max_unique_words) and (len(t) > min_length)
+
+    df[column] = df[column].astype(str)
+    df[column] = df[column].apply(
+        lambda t: "{spam} " + t if is_spam(t) else t
     )
-    df = df[df['is_spam'] == 0]
-    df = df.drop(columns=['is_spam'])
     df = df.reset_index(drop=True)
     return df
+
 
 
 
@@ -221,18 +297,16 @@ def remove_obvious_spam(df, column='text', max_unique_words=2, min_length=20):
 df = remove_empty_texts(df)
 df['text'] = df['text'].apply(lowercase_strip)
 df['text'] = df['text'].apply(remove_punctuation_space)
-df['text'] = df['text'].apply(fix_abbr_en)
 df['text'] = df['text'].apply(replace_links)
-df['text'] = df['text'].apply(remove_repeated_vowels)
-df['text'] = df['text'].apply(normalize_laughs_en)
-df['text'] = df['text'].apply(remove_hashtag_symbol)
 df['text'] = df['text'].apply(remove_mentions)
-# df['text'] = df['text'].apply(correcting_words_en)  # ¡Ojo! Esto puede ser lento en datasets grandes
 df['text'] = df['text'].apply(remove_currency)
+df['text'] = df['text'].apply(normalize_laughs_en)
+df['text'] = df['text'].apply(normalize_repeated_chars)
+df['text'] = df['text'].apply(fix_abbr_en)
 df['text'] = df['text'].apply(remove_special_characters)
 # --- Lematización ---
 df['text'] = df['text'].apply(lemmatize_text)
-df = remove_obvious_spam(df)
+df = mark_obvious_spam(df)
 df = remove_empty_texts(df)
 df = remove_duplicates(df)
 
