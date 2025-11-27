@@ -66,5 +66,5 @@ print(f"\nTotal de muestras balanceadas: {len(balanced_dataset)}")
 # ------------------------------
 # 5️⃣ Guardar dataset balanceado
 # ------------------------------
-balanced_dataset.to_csv("twitter_balanced_train.csv", index=False)
-print(f"\nDataset balanceado guardado como: twitter_balanced_train.csv")
+balanced_dataset.to_csv("twitter_balancedNOCLEAN.csv", index=False)
+print(f"\nDataset balanceado guardado como: twitter_balancedNOCLEAN.csv")
