@@ -11,8 +11,8 @@ The goal of this project is to build machine learning models capable of classify
 *   **Source:** The dataset used was found in hugging face (https://huggingface.co/datasets/bdstar/Tweets-Sentiment-Analysis) taking only the train split.
 *   **Description:** The dataset contains more than 1.5 million tweets labeled with 'positive', 'neutral' or 'negative'.
 *   **Preprocessing:** Steps taken to clean the data include:
-    *   Removing URLs, mentions, and hashtags.
-    *   Tokenization and lemmatization.
+    *   Removing URLs, mentions, hashtags, capital letters...
+    *   Lemmatization.
     *   Stopword removal.
 
 ## Methodology
