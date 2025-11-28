@@ -8,8 +8,8 @@ The goal of this project is to build machine learning models capable of classify
 
 ## Dataset
 
-*   **Source:** [Describe where the data came from, e.g., Twitter API, Kaggle dataset]
-*   **Description:** The dataset contains [Number] tweets labeled with [Labels].
+*   **Source:** The dataset used was found in hugging face (https://huggingface.co/datasets/bdstar/Tweets-Sentiment-Analysis) taking only the train split.
+*   **Description:** The dataset contains more than 1.5 million tweets labeled with 'positive', 'neutral' or 'negative'.
 *   **Preprocessing:** Steps taken to clean the data include:
     *   Removing URLs, mentions, and hashtags.
     *   Tokenization and lemmatization.
@@ -41,12 +41,10 @@ To run this project locally, follow these steps:
     ```bash
     pip install -r requirements.txt
     ```
+3. Run the code 'IMPORTARDATASETGRANDE.PY' to get the initial dataset we used
 
 ## Usage
 
-Run the main script to train the models or perform inference:
+Run the main script 'logreg_tweets.py' to train the models and get the results from it. Also you will see some graphics to view the analisys in the directory 'GRAFIQUES'.
 
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
