@@ -1,76 +1,105 @@
 import pandas as pd
 import numpy as np
+import sys
+import os
 
 # --- Config ---
-DATA_PATH = "DATASETMASDATOS/twitter_balancedCLEAN.csv"  # nuevo archivo multiclass
+DATA_PATH = "DATASETS/twitter_balancedCLEAN.csv"
+OUTPUT_FILE = "analisis_resultats.txt"  # Nom del fitxer de sortida
 
-# --- Cargar dataset ---
+# --- Carregar dataset ---
+# Ho fem abans d'obrir el fitxer de text per si falla la càrrega
 try:
     df = pd.read_csv(DATA_PATH)
-    
 except FileNotFoundError:
-    raise FileNotFoundError(f"No encuentro {DATA_PATH}. Descárgalo y colócalo ahí.")
+    raise FileNotFoundError(f"No trobo {DATA_PATH}. Descarrega'l i posa'l allà.")
 
-# --- 1) Número de muestras ---
-n_samples = len(df)
-print("Número de muestras:", n_samples)
+# Guardem la referència original de la pantalla (terminal)
+original_stdout = sys.stdout 
 
+print(f"Generant informe a {OUTPUT_FILE}...")
 
-# --- 2) Clases presentes ---
-unique_targets = sorted(df['label'].unique().tolist())
-print("Clases encontradas (valores de 'label'):", unique_targets)
+# Obrim el fitxer i redirigim tots els prints cap a dins
+with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    sys.stdout = f  # <--- MÀGIA: A partir d'aquí, 'print' escriu al fitxer
 
+    # ==========================================
+    # INICI DEL TEU CODI D'ANÀLISI
+    # ==========================================
 
-# Si los valores ya son strings, no hace falta mapear
-# Si quieres mapear a minúsculas para homogeneidad:
-df['label'] = df['label'].astype(str).str.lower().str.strip()
+    print("=== INFORME D'ANÀLISI DEL DATASET ===\n")
 
-n_classes = df['label'].nunique()
-print("Número de clases (etiquetas):", n_classes)
-print(df['label'].value_counts())
+    # --- 1) Número de mostres ---
+    n_samples = len(df)
+    print("Número de mostres:", n_samples)
 
-# --- 3) Distribución por clase ---
-counts = df['label'].value_counts()
-percentages = (counts / n_samples * 100).round(2)
-print("\nDistribución de clases (conteo y %):")
-print(pd.concat([counts, percentages.rename('percent')], axis=1))
+    # --- 2) Classes presents ---
+    unique_targets = sorted(df['label'].unique().tolist())
+    print("Classes trobades (valors de 'label'):", unique_targets)
 
-# --- 4) Ejemplos de tweets por clase ---
-for cls in df['label'].unique():
-    if pd.isna(cls):
-        continue  # Skip NaN classes
-    print(f"\nEjemplos (3) de tweets {str(cls).upper()}:")
-    tweets = df[df['label'] == cls]['text'].dropna()
-    sample_n = min(3, len(tweets))
-    for i, tweet in enumerate(tweets.sample(sample_n, random_state=42).tolist(), 1):
-        print(f"  {i}. {tweet}")
+    # Normalització a minúscules (opcional però recomanat)
+    df['label'] = df['label'].astype(str).str.lower().str.strip()
 
-# --- 5) Tipos de columnas ---
-print("\nTipos de columnas:")
-print(df.dtypes)
+    n_classes = df['label'].nunique()
+    print("Número de classes (etiquetes):", n_classes)
+    print(df['label'].value_counts())
 
-# --- 6) Comprobaciones rápidas ---
-print("\nNaNs por columna:")
-print(df.isna().sum())
+    # --- 3) Distribució per classe ---
+    counts = df['label'].value_counts()
+    percentages = (counts / n_samples * 100).round(2)
+    print("\nDistribució de classes (recompte i %):")
+    print(pd.concat([counts, percentages.rename('percent')], axis=1))
 
-# --- Longitud de texto ---
-df['text_len'] = df['text'].astype(str).map(len)
-print("\nEstadísticas de la longitud de los tweets:")
-print(df['text_len'].describe())
+    # --- 4) Exemples de tweets per classe ---
+    for cls in df['label'].unique():
+        if pd.isna(cls):
+            continue
+        print(f"\nExemples (3) de tweets {str(cls).upper()}:")
+        tweets = df[df['label'] == cls]['text'].dropna()
+        # Control per si hi ha menys de 3 tweets
+        sample_n = min(3, len(tweets))
+        if sample_n > 0:
+            for i, tweet in enumerate(tweets.sample(sample_n, random_state=42).tolist(), 1):
+                print(f"  {i}. {tweet}")
 
-# --- Duplicados ---
-print("Duplicados:", df.duplicated(subset=['text']).sum())
+    # --- 5) Tipus de columnes ---
+    print("\nTipus de columnes:")
+    print(df.dtypes)
 
-# Estadísticas de longitud por clase
-df_no_nan = df.dropna(subset=['label'])
-print(df_no_nan.groupby('label')['text_len'].describe())
+    # --- 6) Comprovacions ràpides ---
+    print("\nNaNs per columna:")
+    print(df.isna().sum())
 
-# --- Duplicados por clase ---
-dup_by_class = df[df.duplicated(subset=['text'], keep=False)]['label'].value_counts()
-print("\nDuplicados por clase:")
-print(dup_by_class)
+    # --- Longitud de text ---
+    df['text_len'] = df['text'].astype(str).map(len)
+    print("\nEstadístiques de la longitud dels tweets:")
+    print(df['text_len'].describe())
 
-# --- Primeros 20 textos duplicados ---
-duplicated_texts = df[df.duplicated(subset=['text'], keep=False)].sort_values('text')
-print("\nPrimeros 20 textos duplicados:")
-print(duplicated_texts.head(20)[['text', 'label']].to_string())
+    # --- Duplicats ---
+    print("Duplicats totals:", df.duplicated(subset=['text']).sum())
+
+    # Estadístiques de longitud per classe
+    df_no_nan = df.dropna(subset=['label'])
+    print("\nEstadístiques de longitud per classe:")
+    print(df_no_nan.groupby('label')['text_len'].describe())
+
+    # --- Duplicats per classe ---
+    dup_by_class = df[df.duplicated(subset=['text'], keep=False)]['label'].value_counts()
+    print("\nDuplicats per classe:")
+    print(dup_by_class)
+
+    # --- Primers 20 textos duplicats ---
+    duplicated_texts = df[df.duplicated(subset=['text'], keep=False)].sort_values('text')
+    print("\nPrimers 20 textos duplicats:")
+    # Fem servir to_string() perquè pandas no talli la taula al fitxer
+    print(duplicated_texts.head(20)[['text', 'label']].to_string())
+
+    # ==========================================
+    # FINAL DEL TEU CODI D'ANÀLISI
+    # ==========================================
+
+# --- RESTAURACIÓ ---
+# Tornem a connectar el print a la pantalla
+sys.stdout = original_stdout
+
+print(f"Fet! Pots consultar els resultats a: {OUTPUT_FILE}")
