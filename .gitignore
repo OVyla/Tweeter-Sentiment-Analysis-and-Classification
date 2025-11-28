@@ -1,2 +1,2 @@
-training.1600000.processed.noemoticon.csv
-twitter_combined.csv
+twitter_balancedNOCLEAN.csv
+twitter_balancedCLEAN.csv

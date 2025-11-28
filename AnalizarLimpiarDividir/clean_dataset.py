@@ -1,4 +1,3 @@
-
 import pandas as pd
 import re
 
@@ -7,35 +6,12 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 
-# Descargar recursos de nltk si no están
-try:
-    nltk.data.find('corpora/wordnet')
-except LookupError:
-    nltk.download('wordnet')
-try:
-    nltk.data.find('corpora/omw-1.4')
-except LookupError:
-    nltk.download('omw-1.4')
-
-lemmatizer = WordNetLemmatizer()
-
-
-
-# --- Cargar dataset ---
-df = pd.read_csv(
-    "twitter_balancedNOCLEAN.csv"
-)
-
-
-
 
 def lemmatize_text(text):
     """
     Aplica lematización palabra a palabra.
     """
     return " ".join([lemmatizer.lemmatize(word) for word in text.split()])
-
-
 
 
 def remove_duplicates(df: pd.DataFrame,
@@ -95,6 +71,7 @@ def lowercase_strip(text: str) -> str:
       elimina espacios al inicio y al final. """
     return text.lower().strip()
 
+
 def remove_empty_texts(df: pd.DataFrame, column='text') -> pd.DataFrame:
     """
     Remove rows where the text column is NaN or empty after stripping spaces.
@@ -106,6 +83,7 @@ def remove_empty_texts(df: pd.DataFrame, column='text') -> pd.DataFrame:
     df = df.reset_index(drop=True)
     return df
 
+
 def remove_punctuation_space(text: str) -> str:
     """
     Elimina signos de puntuación y sustituye por espacios.
@@ -114,6 +92,7 @@ def remove_punctuation_space(text: str) -> str:
     PUNCTUATION = re.compile(r'[.,!?;:…\"\'\-_/\\()#]+')
     # Sustituimos por espacio y convertimos a minúsculas
     return PUNCTUATION.sub(" ", text.lower())
+
 
 def fix_abbr_en(text: str) -> str:
     """
@@ -181,13 +160,11 @@ def fix_abbr_en(text: str) -> str:
         for word in words
     )
 
-import re
 
 def replace_links(text: str) -> str:
     # Patrón para detectar cualquier link común
     url_pattern = r'(http[s]?://\S+|www\.\S+|\S+\.ly/\S+)'
     return re.sub(url_pattern, '{link}', text)
-
 
 
 def normalize_repeated_chars(text: str,
@@ -212,6 +189,7 @@ def normalize_repeated_chars(text: str,
     pattern = re.compile(r'(.)\1{' + str(min_repeats - 1) + ',}')
 
     return pattern.sub(lambda m: m.group(1) * keep, text)
+
 
 def normalize_laughs_en(text: str) -> str:
     """
@@ -249,7 +227,6 @@ def remove_mentions(text: str) -> str:
     return " ".join(['{mention}' if word.startswith('@') else word for word in text.split()])
 
 
-
 def remove_currency(text: str) -> str:
     """
     Replaces mentions of money symbols or currency words with {money}.
@@ -263,9 +240,6 @@ def remove_currency(text: str) -> str:
 def remove_special_characters(text: str) -> str:
     # Mantener solo letras, números y espacios
     return re.sub(r'[^a-zA-Z0-9\s{}]', '', text)
-
-
-
 
 
 def mark_obvious_spam(df: pd.DataFrame, column: str = 'text',
@@ -289,26 +263,41 @@ def mark_obvious_spam(df: pd.DataFrame, column: str = 'text',
 
 
 
+if __name__ == "__main__":
+    # Descargar recursos de nltk si no están
+    try:
+        nltk.data.find('corpora/wordnet')
+    except LookupError:
+        nltk.download('wordnet')
+    try:
+        nltk.data.find('corpora/omw-1.4')
+    except LookupError:
+        nltk.download('omw-1.4')
+
+    lemmatizer = WordNetLemmatizer()
 
 
-# --- Aplicar pipeline de limpieza ---
+    # --- Cargar dataset ---
+    df = pd.read_csv(
+        "DATASETS/twitter_balancedNOCLEAN.csv"
+    )
 
+    # --- Aplicar pipeline de limpieza ---
+    df = remove_empty_texts(df)
+    df['text'] = df['text'].apply(lowercase_strip)
+    df['text'] = df['text'].apply(remove_punctuation_space)
+    df['text'] = df['text'].apply(replace_links)
+    df['text'] = df['text'].apply(remove_mentions)
+    df['text'] = df['text'].apply(remove_currency)
+    df['text'] = df['text'].apply(normalize_laughs_en)
+    df['text'] = df['text'].apply(normalize_repeated_chars)
+    df['text'] = df['text'].apply(fix_abbr_en)
+    df['text'] = df['text'].apply(remove_special_characters)
+    # --- Lematización ---
+    df['text'] = df['text'].apply(lemmatize_text)
+    df = mark_obvious_spam(df)
+    df = remove_empty_texts(df)
+    df = remove_duplicates(df)
 
-df = remove_empty_texts(df)
-df['text'] = df['text'].apply(lowercase_strip)
-df['text'] = df['text'].apply(remove_punctuation_space)
-df['text'] = df['text'].apply(replace_links)
-df['text'] = df['text'].apply(remove_mentions)
-df['text'] = df['text'].apply(remove_currency)
-df['text'] = df['text'].apply(normalize_laughs_en)
-df['text'] = df['text'].apply(normalize_repeated_chars)
-df['text'] = df['text'].apply(fix_abbr_en)
-df['text'] = df['text'].apply(remove_special_characters)
-# --- Lematización ---
-df['text'] = df['text'].apply(lemmatize_text)
-df = mark_obvious_spam(df)
-df = remove_empty_texts(df)
-df = remove_duplicates(df)
-
-# --- Guardar dataset limpio ---
-df.to_csv("twitter_balancedCLEAN.csv", index=False)
+    # --- Guardar dataset limpio ---
+    df.to_csv("DATASETS/twitter_balancedCLEAN.csv", index=False)
