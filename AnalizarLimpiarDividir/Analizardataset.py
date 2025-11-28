@@ -1,105 +1,95 @@
+
+"""
+Análisis exploratorio de un dataset de tweets multiclass.
+Muestra estadísticas, distribución de clases, ejemplos y duplicados.
+"""
+
 import pandas as pd
 import numpy as np
-import sys
-import os
 
-# --- Config ---
-DATA_PATH = "DATASETS/twitter_balancedCLEAN.csv"
-OUTPUT_FILE = "analisis_resultats.txt"  # Nom del fitxer de sortida
+DATA_PATH = "twitter_balancedCLEAN.csv"  # nuevo archivo multiclass
 
-# --- Carregar dataset ---
-# Ho fem abans d'obrir el fitxer de text per si falla la càrrega
-try:
-    df = pd.read_csv(DATA_PATH)
-except FileNotFoundError:
-    raise FileNotFoundError(f"No trobo {DATA_PATH}. Descarrega'l i posa'l allà.")
+def cargar_dataset(path):
+    """Carga el dataset y lanza error si no existe."""
+    try:
+        df = pd.read_csv(path)
+        return df
+    except FileNotFoundError:
+        raise FileNotFoundError(f"No encuentro {path}. Descárgalo y colócalo ahí.")
 
-# Guardem la referència original de la pantalla (terminal)
-original_stdout = sys.stdout 
-
-print(f"Generant informe a {OUTPUT_FILE}...")
-
-# Obrim el fitxer i redirigim tots els prints cap a dins
-with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-    sys.stdout = f  # <--- MÀGIA: A partir d'aquí, 'print' escriu al fitxer
-
-    # ==========================================
-    # INICI DEL TEU CODI D'ANÀLISI
-    # ==========================================
-
-    print("=== INFORME D'ANÀLISI DEL DATASET ===\n")
-
-    # --- 1) Número de mostres ---
+def mostrar_info_basica(df):
+    """Imprime número de muestras y clases presentes."""
     n_samples = len(df)
-    print("Número de mostres:", n_samples)
-
-    # --- 2) Classes presents ---
+    print(f"Número de muestras: {n_samples}")
     unique_targets = sorted(df['label'].unique().tolist())
-    print("Classes trobades (valors de 'label'):", unique_targets)
+    print(f"Clases encontradas (valores de 'label'): {unique_targets}")
 
-    # Normalització a minúscules (opcional però recomanat)
+def homogeneizar_labels(df):
+    """Convierte las etiquetas a minúsculas y sin espacios."""
     df['label'] = df['label'].astype(str).str.lower().str.strip()
+    return df
 
-    n_classes = df['label'].nunique()
-    print("Número de classes (etiquetes):", n_classes)
-    print(df['label'].value_counts())
-
-    # --- 3) Distribució per classe ---
+def mostrar_distribucion_clases(df):
+    """Imprime la distribución de clases (conteo y %)."""
+    n_samples = len(df)
     counts = df['label'].value_counts()
     percentages = (counts / n_samples * 100).round(2)
-    print("\nDistribució de classes (recompte i %):")
+    print("\nDistribución de clases (conteo y %):")
     print(pd.concat([counts, percentages.rename('percent')], axis=1))
 
-    # --- 4) Exemples de tweets per classe ---
+def mostrar_ejemplos_por_clase(df, n=3):
+    """Muestra n ejemplos de tweets por clase."""
     for cls in df['label'].unique():
         if pd.isna(cls):
             continue
-        print(f"\nExemples (3) de tweets {str(cls).upper()}:")
+        print(f"\nEjemplos ({n}) de tweets {str(cls).upper()}:")
         tweets = df[df['label'] == cls]['text'].dropna()
-        # Control per si hi ha menys de 3 tweets
-        sample_n = min(3, len(tweets))
-        if sample_n > 0:
-            for i, tweet in enumerate(tweets.sample(sample_n, random_state=42).tolist(), 1):
-                print(f"  {i}. {tweet}")
+        sample_n = min(n, len(tweets))
+        for i, tweet in enumerate(tweets.sample(sample_n, random_state=42).tolist(), 1):
+            print(f"  {i}. {tweet}")
 
-    # --- 5) Tipus de columnes ---
-    print("\nTipus de columnes:")
+def mostrar_tipos_columnas(df):
+    """Imprime los tipos de columnas."""
+    print("\nTipos de columnas:")
     print(df.dtypes)
 
-    # --- 6) Comprovacions ràpides ---
-    print("\nNaNs per columna:")
+def mostrar_nans(df):
+    """Imprime el número de NaNs por columna."""
+    print("\nNaNs por columna:")
     print(df.isna().sum())
 
-    # --- Longitud de text ---
+def analizar_longitud_texto(df):
+    """Agrega columna de longitud de texto y muestra estadísticas."""
     df['text_len'] = df['text'].astype(str).map(len)
-    print("\nEstadístiques de la longitud dels tweets:")
+    print("\nEstadísticas de la longitud de los tweets:")
     print(df['text_len'].describe())
+    return df
 
-    # --- Duplicats ---
-    print("Duplicats totals:", df.duplicated(subset=['text']).sum())
-
-    # Estadístiques de longitud per classe
+def mostrar_duplicados(df):
+    """Imprime número de duplicados y ejemplos por clase."""
+    print("Duplicados:", df.duplicated(subset=['text']).sum())
     df_no_nan = df.dropna(subset=['label'])
-    print("\nEstadístiques de longitud per classe:")
     print(df_no_nan.groupby('label')['text_len'].describe())
-
-    # --- Duplicats per classe ---
     dup_by_class = df[df.duplicated(subset=['text'], keep=False)]['label'].value_counts()
-    print("\nDuplicats per classe:")
+    print("\nDuplicados por clase:")
     print(dup_by_class)
-
-    # --- Primers 20 textos duplicats ---
     duplicated_texts = df[df.duplicated(subset=['text'], keep=False)].sort_values('text')
-    print("\nPrimers 20 textos duplicats:")
-    # Fem servir to_string() perquè pandas no talli la taula al fitxer
+    print("\nPrimeros 20 textos duplicados:")
     print(duplicated_texts.head(20)[['text', 'label']].to_string())
 
-    # ==========================================
-    # FINAL DEL TEU CODI D'ANÀLISI
-    # ==========================================
+def main():
+    df = cargar_dataset(DATA_PATH)
+    mostrar_info_basica(df)
+    df = homogeneizar_labels(df)
+    n_classes = df['label'].nunique()
+    print(f"Número de clases (etiquetas): {n_classes}")
+    print(df['label'].value_counts())
+    mostrar_distribucion_clases(df)
+    mostrar_ejemplos_por_clase(df, n=3)
+    mostrar_tipos_columnas(df)
+    mostrar_nans(df)
+    df = analizar_longitud_texto(df)
+    mostrar_duplicados(df)
 
-# --- RESTAURACIÓ ---
-# Tornem a connectar el print a la pantalla
-sys.stdout = original_stdout
-
-print(f"Fet! Pots consultar els resultats a: {OUTPUT_FILE}")
+if __name__ == "__main__":
+    main()
