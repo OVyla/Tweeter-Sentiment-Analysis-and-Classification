@@ -2,3 +2,6 @@ twitter_balancedNOCLEAN.csv
 twitter_balancedCLEAN.csv
 tests.py
 analisis_resultats.txt
+MODELS/__pycache__/vector_representation.cpython-313.pyc
+MODELS/__pycache__/logistic_regression.cpython-313.pyc
+output.txt
