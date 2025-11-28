@@ -46,20 +46,6 @@ To run this project locally, follow these steps:
 
 Run the main script to train the models or perform inference:
 
-```bash
-python main.py
-```
-
-## Results
-
-| Model | Accuracy | Precision | Recall | F1-Score |
-|-------|----------|-----------|--------|----------|
-| Model A | 0.00 | 0.00 | 0.00 | 0.00 |
-| Model B | 0.00 | 0.00 | 0.00 | 0.00 |
-
-## Authors
-
-*   **Oriol** - *Initial work*
 
 ## License
 
