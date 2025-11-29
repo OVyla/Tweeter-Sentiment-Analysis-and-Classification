@@ -37,8 +37,10 @@ def model_grid_search(X_train, y_train, **params):
     base_logreg = LogisticRegression(solver='saga', max_iter=1000, n_jobs=-1, random_state=42)
     
     param_grid = {
-        'C': [0.5, 1, 2],
-        'class_weight': [None, 'balanced']
+        'C': [0.01, 0.1, 0.5, 1, 2, 5, 10],
+        'class_weight': [None, 'balanced'],
+        'penalty': ['l1', 'l2'],
+        'multi_class': ['auto', 'ovr', 'multinomial']
     }
     
     gs = GridSearchCV(base_logreg, param_grid, cv=3, scoring='f1_macro', verbose=1, n_jobs=-1)
