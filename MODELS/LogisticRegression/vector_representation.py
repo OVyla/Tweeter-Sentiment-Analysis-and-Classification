@@ -1,13 +1,18 @@
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
-def get_vectors(train_text, val_text, test_text):
+def get_vectors(train_text, val_text, test_text, method='TFIDF'):
     """
-    Aplica TF-IDF amb els paràmetres optimitzats.
-    Retorna les matrius disperses per train, val i test.
+    Dispatcher principal: selecciona l'estratègia segons el paràmetre 'method'.
+    Methods: 'TFIDF' (defecte) o 'BOW'.
     """
+    if method == 'BOW':
+        return _get_bow(train_text, val_text, test_text)
+    else:
+        return _get_tfidf(train_text, val_text, test_text)
+
+def _get_tfidf(train_text, val_text, test_text):
     print("Vectoritzant dades (TF-IDF)...")
-    
     vectorizer = TfidfVectorizer(
         max_features=80000, 
         ngram_range=(1,3), 
@@ -15,20 +20,12 @@ def get_vectors(train_text, val_text, test_text):
         min_df=2,
         max_df=0.95
     )
-    
-    # Ajustem només amb train, transformem la resta
     X_train = vectorizer.fit_transform(train_text)
     X_val = vectorizer.transform(val_text)
     X_test = vectorizer.transform(test_text)
-    
     return X_train, X_val, X_test, vectorizer
 
-def BoW(train_text, val_text, test_text):
-    """
-    Aplica Bag of Words (CountVectorizer) amb paràmetres similars a TF-IDF.
-    Retorna les matrius disperses per train, val i test, i el vectorizer.
-    """
-    from sklearn.feature_extraction.text import CountVectorizer
+def _get_bow(train_text, val_text, test_text):
     print("Vectoritzant dades (Bag of Words)...")
     vectorizer = CountVectorizer(
         max_features=30000,

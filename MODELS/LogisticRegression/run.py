@@ -7,11 +7,11 @@ import logistic_regression as lr
 # ==========================================
 # CONFIGURACIÓ GLOBAL
 # ==========================================
-SELECTED_MODEL = 'ovr'   # 'standard', 'ovo', 'ovr', 'grid'
+SELECTED_MODEL = 'ovr'          # 'standard', 'ovo', 'ovr', 'grid'
+VECTORIZATION_METHOD = 'TFIDF'  # 'TFIDF' o 'BOW'
 OUTPUT_FILE = "output.txt"
 
-# Hiperparàmetres per als models (Logistic Regression)
-# Pots canviar C, max_iter, penalty, class_weight, etc.
+# Hiperparàmetres (Logistic Regression)
 HYPERPARAMETERS = {
     'C': 2.0,
     'max_iter': 500,
@@ -31,21 +31,27 @@ def main():
 
     # 1. Carregar dades
     print("Carregant datasets...")
+    # Assegura't que els paths siguin correctes
     train = pd.read_csv("DATASETS/SPLIT/twitter_trainBALANCED.csv")
     val = pd.read_csv("DATASETS/SPLIT/twitter_valBALANCED.csv")
     test = pd.read_csv("DATASETS/SPLIT/twitter_testBALANCED.csv")
 
-    # 2. Vectorització
-    X_train, X_val, X_test, _ = vr.get_vectors(train['text'], val['text'], test['text'])
+    # 2. Vectorització (passem el mètode configurat)
+    # ATENCIÓ: Passem VECTORIZATION_METHOD aquí
+    X_train, X_val, X_test, _ = vr.get_vectors(
+        train['text'], 
+        val['text'], 
+        test['text'], 
+        method=VECTORIZATION_METHOD
+    )
     
     y_train = train['label']
     y_val = val['label']
     y_test = test['label']
 
     # 3. Selecció i entrenament
-    print(f"Entrenant model: {SELECTED_MODEL.upper()} amb params: {HYPERPARAMETERS}...")
+    print(f"Entrenant model: {SELECTED_MODEL.upper()} amb {VECTORIZATION_METHOD}...")
     
-    # Passem el diccionari HYPERPARAMETERS desempaquetat (**HYPERPARAMETERS)
     if SELECTED_MODEL == 'standard':
         model = lr.model_standard(X_train, y_train, **HYPERPARAMETERS)
     elif SELECTED_MODEL == 'ovo':
@@ -53,7 +59,6 @@ def main():
     elif SELECTED_MODEL == 'ovr':
         model = lr.model_one_vs_rest(X_train, y_train, **HYPERPARAMETERS)
     elif SELECTED_MODEL == 'grid':
-        # GridSearch defineix els seus propis params internament, ignorem els globals
         model = lr.model_grid_search(X_train, y_train)
     else:
         raise ValueError("Model no reconegut.")
@@ -80,6 +85,7 @@ def main():
     with open(OUTPUT_FILE, "w") as f:
         f.write(f"RESUM EXECUCIÓ\n")
         f.write(f"Model: {SELECTED_MODEL}\n")
+        f.write(f"Vectorització: {VECTORIZATION_METHOD}\n")
         f.write(f"Hiperparàmetres: {HYPERPARAMETERS}\n")
         f.write(f"Temps total d'execució: {time_str}\n")
         f.write("=" * 30 + "\n")

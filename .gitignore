@@ -5,3 +5,5 @@ analisis_resultats.txt
 MODELS/__pycache__/vector_representation.cpython-313.pyc
 MODELS/__pycache__/logistic_regression.cpython-313.pyc
 output.txt
+MODELS/LogisticRegression/__pycache__/logistic_regression.cpython-313.pyc
+MODELS/LogisticRegression/__pycache__/vector_representation.cpython-313.pyc
