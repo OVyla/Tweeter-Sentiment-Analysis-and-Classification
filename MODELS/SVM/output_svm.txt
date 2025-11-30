@@ -1,0 +1,58 @@
+RESUMEN SVM - Comparativa
+========================================
+
+>>> Linear SVM (OVO) <<<
+
+=== Linear SVM (OVO) ===
+--- TRAIN ---
+Accuracy: 0.8255
+Confusion Matrix:
+[[309172  45614  16485]
+ [ 34417 302871  23968]
+ [ 18305  52313 291751]]
+              precision    recall  f1-score   support
+
+    negative       0.85      0.83      0.84    371271
+     neutral       0.76      0.84      0.79    361256
+    positive       0.88      0.81      0.84    362369
+
+    accuracy                           0.83   1094896
+   macro avg       0.83      0.83      0.83   1094896
+weighted avg       0.83      0.83      0.83   1094896
+------------------------------------------------------------
+
+=== Linear SVM (OVO) ===
+--- VALIDATION ---
+Accuracy: 0.7992
+Confusion Matrix:
+[[37427  6634  2348]
+ [ 5021 36522  3614]
+ [ 2604  7255 35437]]
+              precision    recall  f1-score   support
+
+    negative       0.83      0.81      0.82     46409
+     neutral       0.72      0.81      0.76     45157
+    positive       0.86      0.78      0.82     45296
+
+    accuracy                           0.80    136862
+   macro avg       0.80      0.80      0.80    136862
+weighted avg       0.80      0.80      0.80    136862
+------------------------------------------------------------
+
+=== Linear SVM (OVO) ===
+--- TEST ---
+Accuracy: 0.8002
+Confusion Matrix:
+[[37541  6608  2260]
+ [ 4951 36569  3637]
+ [ 2545  7341 35411]]
+              precision    recall  f1-score   support
+
+    negative       0.83      0.81      0.82     46409
+     neutral       0.72      0.81      0.76     45157
+    positive       0.86      0.78      0.82     45297
+
+    accuracy                           0.80    136863
+   macro avg       0.80      0.80      0.80    136863
+weighted avg       0.81      0.80      0.80    136863
+------------------------------------------------------------
