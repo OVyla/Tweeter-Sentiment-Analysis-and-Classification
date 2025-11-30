@@ -1,0 +1,58 @@
+RESUMEN RANDOM FOREST - Comparativa
+========================================
+
+>>> Random Forest OVR (gini) <<<
+
+=== Random Forest OVR (gini) ===
+--- TRAIN ---
+Accuracy: 0.6923
+Confusion Matrix:
+[[263631  83437  24203]
+ [ 66128 270865  24263]
+ [ 46776  92122 223471]]
+              precision    recall  f1-score   support
+
+    negative       0.70      0.71      0.71    371271
+     neutral       0.61      0.75      0.67    361256
+    positive       0.82      0.62      0.70    362369
+
+    accuracy                           0.69   1094896
+   macro avg       0.71      0.69      0.69   1094896
+weighted avg       0.71      0.69      0.69   1094896
+------------------------------------------------------------
+
+=== Random Forest OVR (gini) ===
+--- VALIDATION ---
+Accuracy: 0.6857
+Confusion Matrix:
+[[32530 10790  3089]
+ [ 8448 33573  3136]
+ [ 5942 11617 27737]]
+              precision    recall  f1-score   support
+
+    negative       0.69      0.70      0.70     46409
+     neutral       0.60      0.74      0.66     45157
+    positive       0.82      0.61      0.70     45296
+
+    accuracy                           0.69    136862
+   macro avg       0.70      0.69      0.69    136862
+weighted avg       0.70      0.69      0.69    136862
+------------------------------------------------------------
+
+=== Random Forest OVR (gini) ===
+--- TEST ---
+Accuracy: 0.6883
+Confusion Matrix:
+[[32752 10705  2952]
+ [ 8257 33785  3115]
+ [ 5773 11853 27671]]
+              precision    recall  f1-score   support
+
+    negative       0.70      0.71      0.70     46409
+     neutral       0.60      0.75      0.67     45157
+    positive       0.82      0.61      0.70     45297
+
+    accuracy                           0.69    136863
+   macro avg       0.71      0.69      0.69    136863
+weighted avg       0.71      0.69      0.69    136863
+------------------------------------------------------------
