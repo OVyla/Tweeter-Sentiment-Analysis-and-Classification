@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # --- CONFIGURACIÓ DE RECURSOS ---
-N_JOBS_LIMIT = 4  # Ajustat segons el teu feedback
+N_JOBS_LIMIT = 8
 
 def model_standard(X_train, y_train, **params):
     default_params = {'solver': 'saga', 'n_jobs': N_JOBS_LIMIT, 'random_state': 42}
