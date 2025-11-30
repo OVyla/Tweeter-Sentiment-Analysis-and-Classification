@@ -7,3 +7,5 @@ MODELS/__pycache__/logistic_regression.cpython-313.pyc
 output.txt
 MODELS/LogisticRegression/__pycache__/logistic_regression.cpython-313.pyc
 MODELS/LogisticRegression/__pycache__/vector_representation.cpython-313.pyc
+benchmark_output.txt
+MODELS/LogisticRegression/__pycache__/run.cpython-313.pyc
