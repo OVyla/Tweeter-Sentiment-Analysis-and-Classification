@@ -5,15 +5,16 @@ import os
 import time
 
 # --- Path Correction ---
+# Add the parent directory (MODELS) to the path to find shared modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # --- Module Imports ---
 from vector_representation import get_vectors
-from SVM.svm_model import svm_one_vs_rest, svm_one_vs_one
+from LogisticRegression.logistic_regression import model_standard, model_one_vs_one, model_one_vs_rest, model_grid_search
 
 def load_data(base_dir):
     """Loads the CSV datasets."""
-    print("Loading datasets for SVM...")
+    print("Loading datasets...")
     try:
         train_df = pd.read_csv(os.path.join(base_dir, 'DATASETS', 'SPLIT', 'twitter_trainBALANCED.csv'))
         val_df = pd.read_csv(os.path.join(base_dir, 'DATASETS', 'SPLIT', 'twitter_valBALANCED.csv'))
@@ -32,7 +33,7 @@ def print_report(model_name, vector_method, time_taken, y_true, y_pred, title):
 
 def main():
     """
-    Main function to run the SVM benchmark.
+    Main function to run the logistic regression benchmark.
     """
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     train_df, val_df, test_df = load_data(base_dir)
@@ -40,12 +41,13 @@ def main():
     y_train, y_val, y_test = train_df['label'], val_df['label'], test_df['label']
 
     # --- Models and Vectorizers to Test ---
-    # For SVM, we often use TF-IDF as it performs well. BOW is less common.
     models_to_test = [
-        ("Linear SVM (OVR)", lambda X_train, y_train: svm_one_vs_rest(X_train, y_train, C=0.1)),
-        ("Linear SVM (OVO)", lambda X_train, y_train: svm_one_vs_one(X_train, y_train, C=0.1))
+        ("standard", model_standard),
+        ("ovo", model_one_vs_one),
+        ("ovr", model_one_vs_rest)
+        #("grid", model_grid_search) # Excluded by default as it's very slow
     ]
-    vectorizers_to_test = ['TFIDF'] # Using only TF-IDF for brevity
+    vectorizers_to_test = ['TFIDF']
 
     # --- Main Benchmark Loop ---
     for vec_method in vectorizers_to_test:
@@ -77,6 +79,7 @@ def main():
             # Test set
             test_pred = model.predict(X_test)
             print_report(model_name, vec_method, time_taken, y_test, test_pred, "TEST")
+
 
 if __name__ == "__main__":
     main()

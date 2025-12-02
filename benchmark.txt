@@ -1,0 +1,392 @@
+============================================
+==      COMPREHENSIVE BENCHMARK RERUN     ==
+============================================
+
+--- Results for Logistic Regression ---
+Loading datasets...
+Vectoritzant dades (TF-IDF)...
+
+============================================================
+Model: standard | Vectorització: TFIDF
+============================================================
+
+Temps entrenament: 24.34 s
+
+--- TRAIN ---
+Accuracy: 0.8328
+              precision    recall  f1-score   support
+
+    negative     0.8585    0.8418    0.8501    371271
+     neutral     0.7713    0.8345    0.8017    361256
+    positive     0.8759    0.8218    0.8480    362369
+
+    accuracy                         0.8328   1094896
+   macro avg     0.8352    0.8327    0.8332   1094896
+weighted avg     0.8355    0.8328    0.8334   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.8014
+              precision    recall  f1-score   support
+
+    negative     0.8305    0.8118    0.8211     46409
+     neutral     0.7342    0.7982    0.7649     45157
+    positive     0.8480    0.7938    0.8200     45296
+
+    accuracy                         0.8014    136862
+   macro avg     0.8042    0.8013    0.8020    136862
+weighted avg     0.8045    0.8014    0.8022    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.8022
+              precision    recall  f1-score   support
+
+    negative     0.8338    0.8125    0.8230     46409
+     neutral     0.7320    0.8014    0.7652     45157
+    positive     0.8505    0.7925    0.8205     45297
+
+    accuracy                         0.8022    136863
+   macro avg     0.8055    0.8021    0.8029    136863
+weighted avg     0.8058    0.8022    0.8031    136863
+
+------------------------------------------------------------
+
+============================================================
+Model: ovo | Vectorització: TFIDF
+============================================================
+
+Temps entrenament: 13.16 s
+
+--- TRAIN ---
+Accuracy: 0.8243
+              precision    recall  f1-score   support
+
+    negative     0.8511    0.8322    0.8415    371271
+     neutral     0.7592    0.8309    0.7934    361256
+    positive     0.8719    0.8096    0.8396    362369
+
+    accuracy                         0.8243   1094896
+   macro avg     0.8274    0.8242    0.8248   1094896
+weighted avg     0.8276    0.8243    0.8250   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7981
+              precision    recall  f1-score   support
+
+    negative     0.8273    0.8068    0.8170     46409
+     neutral     0.7280    0.8008    0.7627     45157
+    positive     0.8498    0.7866    0.8170     45296
+
+    accuracy                         0.7981    136862
+   macro avg     0.8017    0.7981    0.7989    136862
+weighted avg     0.8020    0.7981    0.7990    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.8003
+              precision    recall  f1-score   support
+
+    negative     0.8313    0.8101    0.8206     46409
+     neutral     0.7286    0.8028    0.7639     45157
+    positive     0.8520    0.7877    0.8186     45297
+
+    accuracy                         0.8003    136863
+   macro avg     0.8039    0.8002    0.8010    136863
+weighted avg     0.8042    0.8003    0.8012    136863
+
+------------------------------------------------------------
+
+============================================================
+Model: ovr | Vectorització: TFIDF
+============================================================
+
+Temps entrenament: 19.18 s
+
+--- TRAIN ---
+Accuracy: 0.8248
+              precision    recall  f1-score   support
+
+    negative     0.8487    0.8379    0.8433    371271
+     neutral     0.7637    0.8242    0.7928    361256
+    positive     0.8695    0.8121    0.8398    362369
+
+    accuracy                         0.8248   1094896
+   macro avg     0.8273    0.8247    0.8253   1094896
+weighted avg     0.8275    0.8248    0.8255   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7995
+              precision    recall  f1-score   support
+
+    negative     0.8261    0.8136    0.8198     46409
+     neutral     0.7328    0.7940    0.7622     45157
+    positive     0.8479    0.7904    0.8181     45296
+
+    accuracy                         0.7995    136862
+   macro avg     0.8023    0.7994    0.8001    136862
+weighted avg     0.8025    0.7995    0.8003    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.8005
+              precision    recall  f1-score   support
+
+    negative     0.8299    0.8154    0.8226     46409
+     neutral     0.7315    0.7961    0.7624     45157
+    positive     0.8492    0.7895    0.8183     45297
+
+    accuracy                         0.8005    136863
+   macro avg     0.8035    0.8004    0.8011    136863
+weighted avg     0.8038    0.8005    0.8013    136863
+
+------------------------------------------------------------
+
+
+--- Results for Support Vector Machine (SVM) ---
+Loading datasets for SVM...
+Vectoritzant dades (TF-IDF)...
+
+============================================================
+Model: Linear SVM (OVR) | Vectorització: TFIDF
+============================================================
+
+Temps entrenament: 47.11 s
+
+--- TRAIN ---
+Accuracy: 0.8249
+              precision    recall  f1-score   support
+
+    negative     0.8509    0.8375    0.8441    371271
+     neutral     0.7598    0.8288    0.7928    361256
+    positive     0.8732    0.8082    0.8395    362369
+
+    accuracy                         0.8249   1094896
+   macro avg     0.8280    0.8248    0.8255   1094896
+weighted avg     0.8282    0.8249    0.8257   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7991
+              precision    recall  f1-score   support
+
+    negative     0.8278    0.8124    0.8200     46409
+     neutral     0.7284    0.7991    0.7621     45157
+    positive     0.8515    0.7854    0.8171     45296
+
+    accuracy                         0.7991    136862
+   macro avg     0.8026    0.7990    0.7998    136862
+weighted avg     0.8029    0.7991    0.8000    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7999
+              precision    recall  f1-score   support
+
+    negative     0.8312    0.8135    0.8223     46409
+     neutral     0.7271    0.8011    0.7623     45157
+    positive     0.8526    0.7846    0.8172     45297
+
+    accuracy                         0.7999    136863
+   macro avg     0.8036    0.7998    0.8006    136863
+weighted avg     0.8039    0.7999    0.8008    136863
+
+------------------------------------------------------------
+
+============================================================
+Model: Linear SVM (OVO) | Vectorització: TFIDF
+============================================================
+
+Temps entrenament: 36.79 s
+
+--- TRAIN ---
+Accuracy: 0.8255
+              precision    recall  f1-score   support
+
+    negative     0.8543    0.8327    0.8434    371271
+     neutral     0.7557    0.8384    0.7949    361256
+    positive     0.8782    0.8051    0.8401    362369
+
+    accuracy                         0.8255   1094896
+   macro avg     0.8294    0.8254    0.8261   1094896
+weighted avg     0.8297    0.8255    0.8263   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7992
+              precision    recall  f1-score   support
+
+    negative     0.8307    0.8064    0.8184     46409
+     neutral     0.7245    0.8088    0.7643     45157
+    positive     0.8560    0.7823    0.8175     45296
+
+    accuracy                         0.7992    136862
+   macro avg     0.8037    0.7992    0.8001    136862
+weighted avg     0.8040    0.7992    0.8003    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.8002
+              precision    recall  f1-score   support
+
+    negative     0.8336    0.8089    0.8210     46409
+     neutral     0.7239    0.8098    0.7644     45157
+    positive     0.8572    0.7818    0.8177     45297
+
+    accuracy                         0.8002    136863
+   macro avg     0.8049    0.8002    0.8011    136863
+weighted avg     0.8052    0.8002    0.8013    136863
+
+------------------------------------------------------------
+
+
+--- Results for Random Forest & Ensemble ---
+Loading datasets for Random Forest...
+Vectoritzant dades (TF-IDF)...
+
+============================================================
+Model: Random Forest OVR | Vectorització: TFIDF
+============================================================
+
+Temps entrenament: 45.09 s
+
+--- TRAIN ---
+Accuracy: 0.6830
+              precision    recall  f1-score   support
+
+    negative     0.6740    0.7243    0.6982    371271
+     neutral     0.6056    0.7297    0.6619    361256
+    positive     0.8261    0.5941    0.6911    362369
+
+    accuracy                         0.6830   1094896
+   macro avg     0.7019    0.6827    0.6837   1094896
+weighted avg     0.7017    0.6830    0.6839   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.6710
+              precision    recall  f1-score   support
+
+    negative     0.6616    0.7109    0.6854     46409
+     neutral     0.5937    0.7172    0.6496     45157
+    positive     0.8152    0.5839    0.6804     45296
+
+    accuracy                         0.6710    136862
+   macro avg     0.6902    0.6707    0.6718    136862
+weighted avg     0.6900    0.6710    0.6719    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.6740
+              precision    recall  f1-score   support
+
+    negative     0.6666    0.7150    0.6899     46409
+     neutral     0.5945    0.7203    0.6514     45157
+    positive     0.8196    0.5857    0.6832     45297
+
+    accuracy                         0.6740    136863
+   macro avg     0.6936    0.6737    0.6748    136863
+weighted avg     0.6934    0.6740    0.6750    136863
+
+------------------------------------------------------------
+
+============================================================
+Model: AdaBoost OVR | Vectorització: TFIDF
+============================================================
+
+Temps entrenament: 541.94 s
+
+--- TRAIN ---
+Accuracy: 0.4929
+              precision    recall  f1-score   support
+
+    negative     0.5858    0.4327    0.4978    371271
+     neutral     0.4486    0.4248    0.4364    361256
+    positive     0.4713    0.6225    0.5364    362369
+
+    accuracy                         0.4929   1094896
+   macro avg     0.5019    0.4933    0.4902   1094896
+weighted avg     0.5027    0.4929    0.4903   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.4942
+              precision    recall  f1-score   support
+
+    negative     0.5854    0.4302    0.4960     46409
+     neutral     0.4507    0.4266    0.4383     45157
+    positive     0.4733    0.6271    0.5395     45296
+
+    accuracy                         0.4942    136862
+   macro avg     0.5031    0.4946    0.4913    136862
+weighted avg     0.5039    0.4942    0.4913    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.4913
+              precision    recall  f1-score   support
+
+    negative     0.5835    0.4283    0.4940     46409
+     neutral     0.4470    0.4237    0.4350     45157
+    positive     0.4706    0.6234    0.5363     45297
+
+    accuracy                         0.4913    136863
+   macro avg     0.5004    0.4918    0.4884    136863
+weighted avg     0.5011    0.4913    0.4885    136863
+
+------------------------------------------------------------
+
+============================================================
+Model: LightGBM Multiclass | Vectorització: TFIDF
+============================================================
+
+[LightGBM] [Info] Total Bins 965132
+[LightGBM] [Info] Number of data points in the train set: 1094896, number of used features: 78899
+[LightGBM] [Info] Start training from score -1.081482
+[LightGBM] [Info] Start training from score -1.108828
+[LightGBM] [Info] Start training from score -1.105752
+Temps entrenament: 549.37 s
+
+--- TRAIN ---
+Accuracy: 0.7827
+              precision    recall  f1-score   support
+
+    negative     0.8246    0.7733    0.7981    371271
+     neutral     0.6980    0.8208    0.7544    361256
+    positive     0.8494    0.7545    0.7991    362369
+
+    accuracy                         0.7827   1094896
+   macro avg     0.7906    0.7829    0.7839   1094896
+weighted avg     0.7910    0.7827    0.7840   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7732
+              precision    recall  f1-score   support
+
+    negative     0.8124    0.7621    0.7864     46409
+     neutral     0.6871    0.8098    0.7434     45157
+    positive     0.8451    0.7482    0.7937     45296
+
+    accuracy                         0.7732    136862
+   macro avg     0.7815    0.7734    0.7745    136862
+weighted avg     0.7819    0.7732    0.7747    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7754
+              precision    recall  f1-score   support
+
+    negative     0.8170    0.7675    0.7915     46409
+     neutral     0.6890    0.8129    0.7459     45157
+    positive     0.8451    0.7461    0.7925     45297
+
+    accuracy                         0.7754    136863
+   macro avg     0.7837    0.7755    0.7766    136863
+weighted avg     0.7841    0.7754    0.7768    136863
+
+------------------------------------------------------------
+
+

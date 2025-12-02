@@ -1,50 +1,132 @@
 # Twitter Sentiment Analysis and Classification
 
-This project focuses on performing sentiment analysis and classification on Twitter data. It was developed as part of the "Aprenentatge Computacional" (Computational Learning) course at Universitat Autònoma de Barcelona (UAB).
+This project, developed for the "Aprenentatge Computacional" (Computational Learning) course at Universitat Autònoma de Barcelona (UAB), performs sentiment analysis and classification on Twitter data. It explores various machine learning models to classify tweets into 'positive', 'neutral', or 'negative' categories.
 
-## Project Overview
+## Project Structure
 
-The goal of this project is to build machine learning models capable of classifying tweets based on their sentiment (e.g., positive, negative, neutral) or other specific categories.
+The repository is organized as follows:
+
+```
+.
+├── AnalizarLimpiarDividir/ # Scripts for data processing
+│   ├── Analizardataset.py
+│   ├── clean_dataset.py
+│   ├── IMPORTARDATASETGRANDE.py
+│   └── SplitDataset.py
+├── DATASETS/                 # Raw and processed data
+│   ├── twitter_balancedCLEAN.csv
+│   └── ...
+├── GRAFIQUES/                # Generated plots and visualizations
+│   ├── analisisDataset/
+│   ├── logreg/
+│   └── WORDCLOUD/
+├── MODELS/                   # ML model implementations
+│   ├── LogisticRegression/
+│   ├── RandomForest/
+│   └── SVM/
+├── PLOTS/                    # Benchmark plots for model comparison
+│   ├── benchmark_accuracy.png
+│   ├── benchmark_f1.png
+│   └── benchmark_time.png
+├── requirements.txt          # Project dependencies
+└── README.md                 # This file
+```
 
 ## Dataset
 
-*   **Source:** The dataset used was found in hugging face (https://huggingface.co/datasets/bdstar/Tweets-Sentiment-Analysis) taking only the train split.
-*   **Description:** The dataset contains more than 1.5 million tweets labeled with 'positive', 'neutral' or 'negative'.
-*   **Preprocessing:** Steps taken to clean the data include:
-    *   Removing URLs, mentions, hashtags, capital letters...
-    *   Lemmatization.
-    *   Stopword removal.
+*   **Source**: The dataset is sourced from [Hugging Face Datasets](https://huggingface.co/datasets/bdstar/Tweets-Sentiment-Analysis) (train split).
+*   **Description**: It contains over 1.5 million tweets, each labeled with 'positive', 'neutral', or 'negative' sentiment.
+*   **Preprocessing**: The data cleaning process (`clean_dataset.py`) involves:
+    *   Lowercasing text.
+    *   Removing URLs, user mentions, and hashtags.
+    *   Lemmatization using NLTK's WordNet.
+    *   Removal of common English stopwords.
 
-## Methodology
+## Getting Started
 
-The project explores several machine learning algorithms, including:
+Follow these instructions to set up and run the project locally.
 
-1.  **Feature Extraction:**
-    *   Bag of Words (BoW)
-    *   TF-IDF
-    *   Word Embeddings (e.g., Word2Vec, GloVe)
-2.  **Models:**
-    *   Naïve Bayes
-    *   Support Vector Machines (SVM)
-    *   Logistic Regression
-    *   [Any Deep Learning models if applicable, e.g., LSTM, BERT]
+### 1. Prerequisites
 
-## Installation
+*   Python 3.8+
+*   Git
 
-To run this project locally, follow these steps:
+### 2. Installation
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/Tweeter-Sentiment-Analysis-and-Classification.git
-    ```
-2.  Install the required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-3. Run the code 'IMPORTARDATASETGRANDE.PY' to get the initial dataset we used
+Clone the repository to your local machine:
+```bash
+git clone https://github.com/your-username/Tweeter-Sentiment-Analysis-and-Classification.git
+cd Tweeter-Sentiment-Analysis-and-Classification
+```
+
+Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+```
+
+Install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+Download the NLTK data required for preprocessing:
+```python
+import nltk
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
+```
+
+### 3. Data Preparation
+
+First, download the original dataset by running the following script. This will fetch the data from Hugging Face and save it in the `DATASETS` directory.
+```bash
+python AnalizarLimpiarDividir/IMPORTARDATASETGRANDE.py
+```
+
+Next, clean and preprocess the dataset:
+```bash
+python AnalizarLimpiarDividir/clean_dataset.py
+```
+
+Finally, split the cleaned data into training, validation, and test sets:
+```bash
+python AnalizarLimpiarDividir/SplitDataset.py
+```
 
 ## Usage
 
-Run the main script 'logreg_tweets.py' to train the models and get the results from it. Also you will see some graphics to view the analisys in the directory 'GRAFIQUES'.
+The project includes implementations for several machine learning models.
 
+### Running Models
 
+You can train and evaluate the models by running their respective `run` scripts. For example, to run the Logistic Regression model:
+```bash
+python MODELS/LogisticRegression/run.py
+```
+
+Similarly, for other models:
+```bash
+# Support Vector Machine
+python MODELS/SVM/run_svm.py
+
+# Random Forest
+python MODELS/RandomForest/run_random_forest.py
+```
+
+### Benchmarking
+
+The scripts generate performance metrics and save them in files like `analisis_resultats.txt` and `benchmark_output.txt`. The `PLOTS` directory contains visualizations comparing the accuracy, F1-score, and execution time of the different models.
+
+## Models Explored
+
+*   **Logistic Regression**: Implemented with different vector representations (Bag-of-Words, TF-IDF) and multiclass strategies (One-vs-Rest, One-vs-One).
+*   **Support Vector Machines (SVM)**: Both `LinearSVC` and `SVC` with different kernels are tested.
+*   **Ensemble Methods**:
+    *   Random Forest
+    *   AdaBoost
+    *   Gradient Boosting
+    *   LightGBM
+
+Results, including confusion matrices, ROC curves, and validation curves, are saved in the `GRAFIQUES` directory.
