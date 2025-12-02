@@ -1,0 +1,20 @@
+=== NAIVE BAYES (Bernoulli, alpha=1.0) ===
+Train Accuracy: 0.7586
+Validation Accuracy: 0.7428
+Test Accuracy: 0.7453
+
+Confusion Matrix (Test):
+[[34658  8709  3042]
+ [ 5865 35564  3728]
+ [ 4105  9404 31788]]
+Classification Report (Test):
+              precision    recall  f1-score   support
+
+    negative      0.777     0.747     0.761     46409
+     neutral      0.663     0.788     0.720     45157
+    positive      0.824     0.702     0.758     45297
+
+    accuracy                          0.745    136863
+   macro avg      0.755     0.745     0.746    136863
+weighted avg      0.755     0.745     0.747    136863
+
