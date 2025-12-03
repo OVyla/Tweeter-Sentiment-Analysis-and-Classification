@@ -9,3 +9,4 @@ MODELS/LogisticRegression/__pycache__/logistic_regression.cpython-313.pyc
 MODELS/LogisticRegression/__pycache__/vector_representation.cpython-313.pyc
 benchmark_output.txt
 MODELS/LogisticRegression/__pycache__/run.cpython-313.pyc
+MODELS/NaiveBayes/__pycache__/naive_bayes.cpython-313.pyc
