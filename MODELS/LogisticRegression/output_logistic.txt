@@ -1,0 +1,126 @@
+
+============================================================
+Model: Logistic Regression Standard | Vectorización: TFIDF
+============================================================
+Tiempo de entrenamiento: 43.92 s
+
+--- TRAIN ---
+Accuracy: 0.8328
+              precision    recall  f1-score   support
+
+    negative     0.8585    0.8419    0.8501    371271
+     neutral     0.7714    0.8345    0.8017    361256
+    positive     0.8760    0.8218    0.8481    362369
+
+    accuracy                         0.8328   1094896
+   macro avg     0.8353    0.8328    0.8333   1094896
+weighted avg     0.8355    0.8328    0.8335   1094896
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.8015
+              precision    recall  f1-score   support
+
+    negative     0.8308    0.8117    0.8211     46409
+     neutral     0.7341    0.7989    0.7651     45157
+    positive     0.8484    0.7938    0.8202     45296
+
+    accuracy                         0.8015    136862
+   macro avg     0.8044    0.8014    0.8021    136862
+weighted avg     0.8047    0.8015    0.8023    136862
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.8023
+              precision    recall  f1-score   support
+
+    negative     0.8338    0.8124    0.8229     46409
+     neutral     0.7321    0.8015    0.7652     45157
+    positive     0.8507    0.7927    0.8207     45297
+
+    accuracy                         0.8023    136863
+   macro avg     0.8055    0.8022    0.8030    136863
+weighted avg     0.8058    0.8023    0.8032    136863
+------------------------------------------------------------
+
+============================================================
+Model: Logistic Regression OvO | Vectorización: TFIDF
+============================================================
+Tiempo de entrenamiento: 21.52 s
+
+--- TRAIN ---
+Accuracy: 0.8243
+              precision    recall  f1-score   support
+
+    negative     0.8512    0.8322    0.8416    371271
+     neutral     0.7592    0.8311    0.7935    361256
+    positive     0.8719    0.8096    0.8396    362369
+
+    accuracy                         0.8243   1094896
+   macro avg     0.8274    0.8243    0.8249   1094896
+weighted avg     0.8277    0.8243    0.8251   1094896
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7986
+              precision    recall  f1-score   support
+
+    negative     0.8277    0.8074    0.8174     46409
+     neutral     0.7285    0.8014    0.7632     45157
+    positive     0.8502    0.7867    0.8172     45296
+
+    accuracy                         0.7986    136862
+   macro avg     0.8021    0.7985    0.7993    136862
+weighted avg     0.8024    0.7986    0.7994    136862
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.8003
+              precision    recall  f1-score   support
+
+    negative     0.8315    0.8101    0.8207     46409
+     neutral     0.7287    0.8029    0.7640     45157
+    positive     0.8518    0.7878    0.8185     45297
+
+    accuracy                         0.8003    136863
+   macro avg     0.8040    0.8003    0.8011    136863
+weighted avg     0.8043    0.8003    0.8013    136863
+------------------------------------------------------------
+
+============================================================
+Model: Logistic Regression OvR | Vectorización: TFIDF
+============================================================
+Tiempo de entrenamiento: 28.90 s
+
+--- TRAIN ---
+Accuracy: 0.8249
+              precision    recall  f1-score   support
+
+    negative     0.8488    0.8380    0.8433    371271
+     neutral     0.7637    0.8242    0.7928    361256
+    positive     0.8695    0.8121    0.8398    362369
+
+    accuracy                         0.8249   1094896
+   macro avg     0.8273    0.8248    0.8253   1094896
+weighted avg     0.8276    0.8249    0.8255   1094896
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7997
+              precision    recall  f1-score   support
+
+    negative     0.8266    0.8137    0.8201     46409
+     neutral     0.7330    0.7947    0.7626     45157
+    positive     0.8479    0.7904    0.8181     45296
+
+    accuracy                         0.7997    136862
+   macro avg     0.8025    0.7996    0.8003    136862
+weighted avg     0.8028    0.7997    0.8005    136862
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.8005
+              precision    recall  f1-score   support
+
+    negative     0.8302    0.8150    0.8226     46409
+     neutral     0.7313    0.7967    0.7626     45157
+    positive     0.8492    0.7895    0.8183     45297
+
+    accuracy                         0.8005    136863
+   macro avg     0.8036    0.8004    0.8012    136863
+weighted avg     0.8039    0.8005    0.8014    136863
+------------------------------------------------------------
