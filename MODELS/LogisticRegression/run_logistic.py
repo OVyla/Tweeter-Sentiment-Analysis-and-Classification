@@ -68,18 +68,26 @@ def main():
             print(f"Temps entrenament: {time_taken:.2f} s\n")
 
             # --- Evaluation ---
-            # Train set
+            # Train
             train_pred = model.predict(X_train)
-            print_report(model_name, vec_method, time_taken, y_train, train_pred, "TRAIN")
-            
-            # Validation set
-            val_pred = model.predict(X_val)
-            print_report(model_name, vec_method, time_taken, y_val, val_pred, "VALIDATION")
-            
-            # Test set
-            test_pred = model.predict(X_test)
-            print_report(model_name, vec_method, time_taken, y_test, test_pred, "TEST")
+            output_lines.append(print_report(y_train, train_pred, "TRAIN"))
 
+            # Validation
+            val_pred = model.predict(X_val)
+            output_lines.append(print_report(y_val, val_pred, "VALIDATION"))
+
+            # Test
+            test_pred = model.predict(X_test)
+            output_lines.append(print_report(y_test, test_pred, "TEST"))
+
+
+    # --- Save results to file ---
+    with open(output_file_path, "w", encoding="utf-8") as f:
+        for line in output_lines:
+            f.write(line)
+
+    print(f"\nResults also saved to {output_file_path}")
+    
 
 if __name__ == "__main__":
     main()
