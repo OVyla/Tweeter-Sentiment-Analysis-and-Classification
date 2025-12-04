@@ -17,14 +17,17 @@ The repository is organized as follows:
 │   ├── twitter_balancedCLEAN.csv
 │   └── ...
 ├── GRAFIQUES/                # Generated plots and visualizations
+│   ├── BENCHMARK/
+│   ├── EnsembleBoostingLightGBM/
+│   ├── NaiveBayes/
+│   ├── SVM/
+│   ├── WORDCLOUD/
 │   ├── analisisDataset/
-│   ├── logreg/
-│   └── WORDCLOUD/
+│   └── logreg/
 ├── MODELS/                   # ML model implementations
 │   ├── LogisticRegression/
 │   ├── RandomForest/
-│   └── SVM/
-├── PLOTS/                    # Benchmark plots for model comparison
+│   ├── SVM/
 │   ├── benchmark_accuracy.png
 │   ├── benchmark_f1.png
 │   └── benchmark_time.png
