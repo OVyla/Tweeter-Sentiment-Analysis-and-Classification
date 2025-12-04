@@ -1,0 +1,470 @@
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_500.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 500
+============================================================
+
+Temps entrenament: 1.72 s
+
+--- TRAIN ---
+Accuracy: 0.6317
+              precision    recall  f1-score   support
+
+    negative     0.6287    0.6616    0.6447    371271
+     neutral     0.5800    0.5913    0.5856    361256
+    positive     0.6918    0.6413    0.6656    362369
+
+    accuracy                         0.6317   1094896
+   macro avg     0.6335    0.6314    0.6320   1094896
+weighted avg     0.6335    0.6317    0.6321   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.6305
+              precision    recall  f1-score   support
+
+    negative     0.6264    0.6621    0.6438     46409
+     neutral     0.5792    0.5879    0.5835     45157
+    positive     0.6915    0.6407    0.6651     45296
+
+    accuracy                         0.6305    136862
+   macro avg     0.6324    0.6302    0.6308    136862
+weighted avg     0.6324    0.6305    0.6309    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.6308
+              precision    recall  f1-score   support
+
+    negative     0.6301    0.6641    0.6466     46409
+     neutral     0.5769    0.5891    0.5829     45157
+    positive     0.6910    0.6384    0.6636     45297
+
+    accuracy                         0.6308    136863
+   macro avg     0.6327    0.6305    0.6311    136863
+weighted avg     0.6327    0.6308    0.6312    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_1000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 1000
+============================================================
+
+Temps entrenament: 1.68 s
+
+--- TRAIN ---
+Accuracy: 0.6600
+              precision    recall  f1-score   support
+
+    negative     0.6568    0.6986    0.6771    371271
+     neutral     0.6127    0.6093    0.6110    361256
+    positive     0.7135    0.6709    0.6915    362369
+
+    accuracy                         0.6600   1094896
+   macro avg     0.6610    0.6596    0.6599   1094896
+weighted avg     0.6610    0.6600    0.6601   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.6572
+              precision    recall  f1-score   support
+
+    negative     0.6519    0.6968    0.6736     46409
+     neutral     0.6106    0.6034    0.6070     45157
+    positive     0.7120    0.6701    0.6904     45296
+
+    accuracy                         0.6572    136862
+   macro avg     0.6582    0.6568    0.6570    136862
+weighted avg     0.6582    0.6572    0.6572    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.6593
+              precision    recall  f1-score   support
+
+    negative     0.6573    0.7016    0.6787     46409
+     neutral     0.6109    0.6067    0.6088     45157
+    positive     0.7126    0.6683    0.6898     45297
+
+    accuracy                         0.6593    136863
+   macro avg     0.6603    0.6589    0.6591    136863
+weighted avg     0.6603    0.6593    0.6593    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_2000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 2000
+============================================================
+
+Temps entrenament: 1.67 s
+
+--- TRAIN ---
+Accuracy: 0.6868
+              precision    recall  f1-score   support
+
+    negative     0.6880    0.7329    0.7097    371271
+     neutral     0.6386    0.6301    0.6343    361256
+    positive     0.7357    0.6962    0.7154    362369
+
+    accuracy                         0.6868   1094896
+   macro avg     0.6874    0.6864    0.6865   1094896
+weighted avg     0.6875    0.6868    0.6867   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.6833
+              precision    recall  f1-score   support
+
+    negative     0.6819    0.7295    0.7049     46409
+     neutral     0.6342    0.6239    0.6290     45157
+    positive     0.7358    0.6951    0.7149     45296
+
+    accuracy                         0.6833    136862
+   macro avg     0.6840    0.6828    0.6829    136862
+weighted avg     0.6840    0.6833    0.6832    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.6859
+              precision    recall  f1-score   support
+
+    negative     0.6877    0.7353    0.7107     46409
+     neutral     0.6375    0.6279    0.6327     45157
+    positive     0.7343    0.6933    0.7132     45297
+
+    accuracy                         0.6859    136863
+   macro avg     0.6865    0.6855    0.6855    136863
+weighted avg     0.6866    0.6859    0.6858    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_5000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 5000
+============================================================
+
+Temps entrenament: 1.68 s
+
+--- TRAIN ---
+Accuracy: 0.7110
+              precision    recall  f1-score   support
+
+    negative     0.7137    0.7651    0.7385    371271
+     neutral     0.6635    0.6494    0.6564    361256
+    positive     0.7569    0.7170    0.7364    362369
+
+    accuracy                         0.7110   1094896
+   macro avg     0.7114    0.7105    0.7104   1094896
+weighted avg     0.7114    0.7110    0.7107   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7065
+              precision    recall  f1-score   support
+
+    negative     0.7081    0.7602    0.7332     46409
+     neutral     0.6566    0.6418    0.6491     45157
+    positive     0.7561    0.7160    0.7355     45296
+
+    accuracy                         0.7065    136862
+   macro avg     0.7069    0.7060    0.7059    136862
+weighted avg     0.7070    0.7065    0.7062    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7097
+              precision    recall  f1-score   support
+
+    negative     0.7146    0.7674    0.7400     46409
+     neutral     0.6613    0.6462    0.6537     45157
+    positive     0.7539    0.7140    0.7334     45297
+
+    accuracy                         0.7097    136863
+   macro avg     0.7099    0.7092    0.7090    136863
+weighted avg     0.7100    0.7097    0.7094    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_10000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 10000
+============================================================
+
+Temps entrenament: 1.68 s
+
+--- TRAIN ---
+Accuracy: 0.7243
+              precision    recall  f1-score   support
+
+    negative     0.7262    0.7821    0.7531    371271
+     neutral     0.6794    0.6593    0.6692    361256
+    positive     0.7679    0.7301    0.7485    362369
+
+    accuracy                         0.7243   1094896
+   macro avg     0.7245    0.7238    0.7236   1094896
+weighted avg     0.7246    0.7243    0.7239   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7199
+              precision    recall  f1-score   support
+
+    negative     0.7212    0.7796    0.7493     46409
+     neutral     0.6725    0.6506    0.6614     45157
+    positive     0.7664    0.7277    0.7465     45296
+
+    accuracy                         0.7199    136862
+   macro avg     0.7200    0.7193    0.7191    136862
+weighted avg     0.7201    0.7199    0.7194    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7216
+              precision    recall  f1-score   support
+
+    negative     0.7269    0.7834    0.7541     46409
+     neutral     0.6738    0.6522    0.6628     45157
+    positive     0.7640    0.7276    0.7453     45297
+
+    accuracy                         0.7216    136863
+   macro avg     0.7216    0.7211    0.7208    136863
+weighted avg     0.7217    0.7216    0.7211    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_20000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 20000
+============================================================
+
+Temps entrenament: 1.69 s
+
+--- TRAIN ---
+Accuracy: 0.7368
+              precision    recall  f1-score   support
+
+    negative     0.7387    0.7962    0.7664    371271
+     neutral     0.6935    0.6692    0.6811    361256
+    positive     0.7782    0.7433    0.7604    362369
+
+    accuracy                         0.7368   1094896
+   macro avg     0.7368    0.7363    0.7360   1094896
+weighted avg     0.7369    0.7368    0.7363   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7313
+              precision    recall  f1-score   support
+
+    negative     0.7335    0.7912    0.7613     46409
+     neutral     0.6862    0.6605    0.6731     45157
+    positive     0.7739    0.7404    0.7568     45296
+
+    accuracy                         0.7313    136862
+   macro avg     0.7312    0.7307    0.7304    136862
+weighted avg     0.7313    0.7313    0.7307    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7319
+              precision    recall  f1-score   support
+
+    negative     0.7366    0.7940    0.7642     46409
+     neutral     0.6852    0.6607    0.6727     45157
+    positive     0.7733    0.7391    0.7558     45297
+
+    accuracy                         0.7319    136863
+   macro avg     0.7317    0.7313    0.7309    136863
+weighted avg     0.7318    0.7319    0.7313    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_40000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 40000
+============================================================
+
+Temps entrenament: 1.74 s
+
+--- TRAIN ---
+Accuracy: 0.7488
+              precision    recall  f1-score   support
+
+    negative     0.7510    0.8080    0.7784    371271
+     neutral     0.7073    0.6807    0.6938    361256
+    positive     0.7878    0.7560    0.7716    362369
+
+    accuracy                         0.7488   1094896
+   macro avg     0.7487    0.7482    0.7479   1094896
+weighted avg     0.7487    0.7488    0.7482   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7400
+              precision    recall  f1-score   support
+
+    negative     0.7410    0.8004    0.7696     46409
+     neutral     0.6954    0.6665    0.6806     45157
+    positive     0.7832    0.7514    0.7670     45296
+
+    accuracy                         0.7400    136862
+   macro avg     0.7399    0.7394    0.7391    136862
+weighted avg     0.7399    0.7400    0.7394    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7397
+              precision    recall  f1-score   support
+
+    negative     0.7448    0.8018    0.7723     46409
+     neutral     0.6936    0.6653    0.6792     45157
+    positive     0.7795    0.7502    0.7646     45297
+
+    accuracy                         0.7397    136863
+   macro avg     0.7393    0.7391    0.7387    136863
+weighted avg     0.7394    0.7397    0.7390    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_80000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 80000
+============================================================
+
+Temps entrenament: 1.74 s
+
+--- TRAIN ---
+Accuracy: 0.7618
+              precision    recall  f1-score   support
+
+    negative     0.7630    0.8201    0.7905    371271
+     neutral     0.7230    0.6931    0.7078    361256
+    positive     0.7986    0.7704    0.7843    362369
+
+    accuracy                         0.7618   1094896
+   macro avg     0.7616    0.7612    0.7609   1094896
+weighted avg     0.7616    0.7618    0.7611   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7452
+              precision    recall  f1-score   support
+
+    negative     0.7477    0.8087    0.7770     46409
+     neutral     0.7016    0.6686    0.6847     45157
+    positive     0.7852    0.7564    0.7705     45296
+
+    accuracy                         0.7452    136862
+   macro avg     0.7448    0.7446    0.7441    136862
+weighted avg     0.7449    0.7452    0.7444    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7462
+              precision    recall  f1-score   support
+
+    negative     0.7515    0.8101    0.7797     46409
+     neutral     0.7026    0.6687    0.6852     45157
+    positive     0.7831    0.7582    0.7704     45297
+
+    accuracy                         0.7462    136863
+   macro avg     0.7457    0.7456    0.7451    136863
+weighted avg     0.7458    0.7462    0.7454    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_130000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 130000
+============================================================
+
+Temps entrenament: 1.73 s
+
+--- TRAIN ---
+Accuracy: 0.7728
+              precision    recall  f1-score   support
+
+    negative     0.7738    0.8303    0.8011    371271
+     neutral     0.7362    0.7048    0.7202    361256
+    positive     0.8077    0.7816    0.7944    362369
+
+    accuracy                         0.7728   1094896
+   macro avg     0.7726    0.7722    0.7719   1094896
+weighted avg     0.7726    0.7728    0.7722   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7481
+              precision    recall  f1-score   support
+
+    negative     0.7504    0.8125    0.7802     46409
+     neutral     0.7059    0.6678    0.6864     45157
+    positive     0.7866    0.7623    0.7743     45296
+
+    accuracy                         0.7481    136862
+   macro avg     0.7477    0.7475    0.7469    136862
+weighted avg     0.7477    0.7481    0.7473    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7495
+              precision    recall  f1-score   support
+
+    negative     0.7545    0.8149    0.7835     46409
+     neutral     0.7063    0.6691    0.6872     45157
+    positive     0.7858    0.7626    0.7741     45297
+
+    accuracy                         0.7495    136863
+   macro avg     0.7489    0.7489    0.7483    136863
+weighted avg     0.7490    0.7495    0.7486    136863
+
+------------------------------------------------------------
+[CACHE] Carregant representació des de DATASETS/VECTORS/tfidf_160000.joblib
+
+============================================================
+Model: complement | Vectorització: TFIDF | Max Features: 160000
+============================================================
+
+Temps entrenament: 1.74 s
+
+--- TRAIN ---
+Accuracy: 0.7779
+              precision    recall  f1-score   support
+
+    negative     0.7783    0.8349    0.8056    371271
+     neutral     0.7424    0.7109    0.7263    361256
+    positive     0.8123    0.7861    0.7990    362369
+
+    accuracy                         0.7779   1094896
+   macro avg     0.7777    0.7773    0.7770   1094896
+weighted avg     0.7777    0.7779    0.7773   1094896
+
+------------------------------------------------------------
+--- VALIDATION ---
+Accuracy: 0.7492
+              precision    recall  f1-score   support
+
+    negative     0.7522    0.8140    0.7819     46409
+     neutral     0.7071    0.6678    0.6869     45157
+    positive     0.7866    0.7639    0.7751     45296
+
+    accuracy                         0.7492    136862
+   macro avg     0.7486    0.7486    0.7479    136862
+weighted avg     0.7487    0.7492    0.7483    136862
+
+------------------------------------------------------------
+--- TEST ---
+Accuracy: 0.7496
+              precision    recall  f1-score   support
+
+    negative     0.7551    0.8155    0.7841     46409
+     neutral     0.7061    0.6684    0.6868     45157
+    positive     0.7856    0.7630    0.7741     45297
+
+    accuracy                         0.7496    136863
+   macro avg     0.7489    0.7490    0.7483    136863
+weighted avg     0.7490    0.7496    0.7487    136863
+
+------------------------------------------------------------
