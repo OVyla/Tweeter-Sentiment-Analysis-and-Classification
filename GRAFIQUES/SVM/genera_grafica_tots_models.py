@@ -7,10 +7,9 @@ import os
 # ============================
 # CONFIGURACIÓ DE RUTES
 # ============================
-# Assegura't que el fitxer output.txt estigui en aquesta ruta
-PATH_INPUT_FILE = os.path.join("MODELS", "NaiveBayes", "output.txt")
-PATH_OUTPUT_DIR = os.path.join("GRAFIQUES", "NaiveBayes")
-PATH_OUTPUT_IMAGE = os.path.join(PATH_OUTPUT_DIR, "benchmark_nb_accuracy_comparison.png")
+PATH_INPUT_FILE = os.path.join("MODELS", "SVM", "output.txt")
+PATH_OUTPUT_DIR = os.path.join("GRAFIQUES", "svm")
+PATH_OUTPUT_IMAGE = os.path.join(PATH_OUTPUT_DIR, "benchmark_accuracy_comparison.png")
 
 # ============================
 # 1. FUNCIÓ PER PARSEJAR EL FITXER OUTPUT.TXT
@@ -21,7 +20,6 @@ def parse_output_file(filepath):
     current_vec = None
     current_split = None
 
-    # Regex patrons
     header_pattern = re.compile(r"Model:\s+(.+?)\s+\|\s+Vectorització:\s+(.+)")
     split_pattern = re.compile(r"---\s+(TRAIN|VALIDATION|TEST)\s+---")
     accuracy_pattern = re.compile(r"Accuracy:\s+(\d+\.\d+)")
@@ -34,7 +32,6 @@ def parse_output_file(filepath):
         for line in f:
             line = line.strip()
             
-            # Detectar Model i Vectorització
             header_match = header_pattern.search(line)
             if header_match:
                 current_model = header_match.group(1).strip()
@@ -42,13 +39,11 @@ def parse_output_file(filepath):
                 current_split = None 
                 continue
 
-            # Detectar Split (Train/Val/Test)
             split_match = split_pattern.search(line)
             if split_match:
                 current_split = split_match.group(1).capitalize()
                 continue
 
-            # Detectar Accuracy
             acc_match = accuracy_pattern.search(line)
             if acc_match and current_model and current_vec and current_split:
                 accuracy_value = float(acc_match.group(1))
@@ -70,12 +65,12 @@ def parse_output_file(filepath):
 def plot_benchmark_results(df, output_path):
     sns.set_theme(style="whitegrid")
     
-    # Conversió a percentatge
+    # Passem a percentatge
     df["Accuracy"] = df["Accuracy"] * 100
 
     custom_palette = {"Train": "#A8DADC", "Validation": "#457B9D", "Test": "#1D3557"}
 
-    # Mantenim la mida gran per evitar solapaments
+    # --- CANVI 1: Més amplada (16) perquè les barres "respirin" ---
     plt.figure(figsize=(16, 8))
 
     ax = sns.barplot(
@@ -85,23 +80,23 @@ def plot_benchmark_results(df, output_path):
         hue="Split",
         palette=custom_palette,
         edgecolor="black",
-        linewidth=0.5
+        linewidth=0.5,
+        # gap=0.1 # Opcional en versions molt noves de seaborn per separar grups
     )
 
-    # Títol adaptat a Naive Bayes
-    ax.set_title("Comparativa Accuracy - Naive Bayes", fontsize=18, pad=20, fontweight='bold')
+    ax.set_title("Comparativa Accuracy - SVM", fontsize=18, pad=20, fontweight='bold')
     ax.set_ylabel("Accuracy (%)", fontsize=14)
     ax.set_xlabel("Model i Vectorització", fontsize=14)
     
-    # Rotació etiquetes eix X
+    # Rotar etiquetes eix X perquè es llegeixin bé
     plt.xticks(rotation=45)
 
-    # Marge superior
-    ax.set_ylim(0, 115)
+    # Marge superior extra per les etiquetes
+    ax.set_ylim(0, 118)
     
     plt.legend(bbox_to_anchor=(1.01, 1), loc='upper left', borderaxespad=0, title="Split")
 
-    # Etiquetes amb percentatge i font petita (8.5)
+    # --- CANVI 2: Font més petita (8.5) ---
     for container in ax.containers:
         ax.bar_label(container, fmt='%.2f%%', padding=3, fontsize=8.5, fontweight='bold')
 
@@ -121,10 +116,9 @@ if __name__ == "__main__":
     if parsed_data:
         df_results = pd.DataFrame(parsed_data)
         
-        # Crear directori si no existeix
         if not os.path.exists(PATH_OUTPUT_DIR):
             os.makedirs(PATH_OUTPUT_DIR)
         
         plot_benchmark_results(df_results, PATH_OUTPUT_IMAGE)
     else:
-        print("⚠️ No s'han trobat dades. Revisa que el fitxer 'output.txt' existeixi a la carpeta MODELS/NaiveBayes/.")
+        print("⚠️ No s'han trobat dades. Revisa el fitxer output.txt.")
