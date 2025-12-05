@@ -2,7 +2,7 @@ import os
 import sys
 import time
 from sklearn.metrics import classification_report, accuracy_score
-fromjoblib import dump, load
+from joblib import dump, load
 
 # ============================
 #  PATHS DEL PROJECTE
