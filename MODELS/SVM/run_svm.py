@@ -2,6 +2,7 @@ import os
 import sys
 import time
 from sklearn.metrics import classification_report, accuracy_score
+fromjoblib import dump, load
 
 # ============================
 #  PATHS DEL PROJECTE
@@ -91,12 +92,20 @@ def main():
             print(f"Model: {model_name} | Vectorització: {vec_method} | vector_features=60000")
             print("------------------------------------------------------------\n")
 
-            start_time = time.time()
-            model = model_fn(X_train, y_train)
-            end_time = time.time()
+            model_path = os.path.join(os.path.dirname(__file__), model_file)
 
-            time_taken = end_time - start_time
-            print(f"Temps entrenament: {time_taken:.2f} s\n")
+            if os.path.exists(model_path):
+                print(f"Cargando modelo guardado: {model_file}")
+                model = load(model_path)
+                time_taken = 0.0
+            else:
+                print(f"Entrenando modelo: {model_name}")
+                start_time = time.time()
+                model = model_fn(X_train, y_train)
+                end_time = time.time()
+                time_taken = end_time - start_time
+                dump(model, model_path)
+                print(f"Modelo guardado en {model_file}")
 
             # --- Avaluació ---
             # TRAIN
