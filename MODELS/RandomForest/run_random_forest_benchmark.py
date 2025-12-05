@@ -93,9 +93,9 @@ def main():
         ##("ada_boost", ada_boost, {"n_estimators": 100}),
         ###("extra_trees", extra_trees, {"n_estimators": 100}),
         ##("gradient_boosting", gradient_boosting, {"n_estimators": 100}),
-     #   ("rf_standard", rf_standard, {"n_estimators": 200, "max_depth": 100}),
-      #  ("rf_one_vs_rest", rf_one_vs_rest, {"n_estimators": 200, "max_depth": 100}),
-       # ("rf_one_vs_one", rf_one_vs_one, {"n_estimators": 200, "max_depth": 100}),
+        ("rf_standard", rf_standard, {"n_estimators": 200, "max_depth": 100}),
+        ("rf_one_vs_rest", rf_one_vs_rest, {"n_estimators": 200, "max_depth": 100}),
+        ("rf_one_vs_one", rf_one_vs_one, {"n_estimators": 200, "max_depth": 100}),
     ]
     # Vectoritzacions a provar (pots afegir "BOW", "SVD", etc. si load_and_vectorize_splits ho suporta)
     vectorizers_to_test = ["TFIDF"]
