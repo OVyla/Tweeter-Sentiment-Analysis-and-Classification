@@ -7,11 +7,10 @@ from joblib import dump, load
 
 
 # --- Path Correction ---
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 # --- Module Imports ---
-from vector_representation import get_vectors
-from RandomForest.random_forest_model import rf_one_vs_rest, ada_boost_ovr, lightgbm_multiclass
+from AnalizarLimpiarDividir.vector_representation import get_vectors
+from MODELS.RandomForest.random_forest_model import rf_one_vs_rest, ada_boost_ovr, lightgbm_multiclass
 
 def load_data(base_dir):
     """Loads the CSV datasets."""
@@ -25,7 +24,7 @@ def load_data(base_dir):
         print(f"Error loading data: {e}. Make sure you have run the data preparation scripts.")
         sys.exit(1)
 
-def print_report(model_name, vector_method, time_taken, y_true, y_pred, title):
+def print_report(y_true, y_pred, title):
     """Prints a formatted report for a given dataset split."""
     print(f"--- {title} ---")
     print(f"Accuracy: {accuracy_score(y_true, y_pred):.4f}")
