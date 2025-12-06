@@ -1,40 +1,15 @@
-RESUMEN EJECUCI”N
-Archivo externo: external_clean_balanced.csv
-Hiperpar·metros: {'C': 2.0, 'max_iter': 500, 'penalty': 'l2', 'class_weight': 'balanced'}
-Tiempo total: 1 min 42.89 s
-==============================
---- TRAIN ---
-Accuracy: 0.8435
+N√∫mero de predicciones 'neutral' ANTES de reasignar: 470121
+Proporci√≥n de 'neutral' ANTES de reasignar: 0.3097
+Accuracy en test Kaggle: 0.7632
               precision    recall  f1-score   support
 
-    negative       0.85      0.83      0.84    531285
-    positive       0.84      0.85      0.84    531285
+    negative       0.78      0.73      0.76    758979
+    positive       0.75      0.79      0.77    758979
 
-    accuracy                           0.84   1062570
-   macro avg       0.84      0.84      0.84   1062570
-weighted avg       0.84      0.84      0.84   1062570
---- VALIDATION ---
-Accuracy: 0.8195
-              precision    recall  f1-score   support
+    accuracy                           0.76   1517958
+   macro avg       0.76      0.76      0.76   1517958
+weighted avg       0.76      0.76      0.76   1517958
 
-    negative       0.83      0.81      0.82    113847
-    positive       0.81      0.83      0.82    113847
-
-    accuracy                           0.82    227694
-   macro avg       0.82      0.82      0.82    227694
-weighted avg       0.82      0.82      0.82    227694
---- TEST ---
-Accuracy: 0.8196
-              precision    recall  f1-score   support
-
-    negative       0.83      0.81      0.82    113847
-    positive       0.81      0.83      0.82    113847
-
-    accuracy                           0.82    227694
-   macro avg       0.82      0.82      0.82    227694
-weighted avg       0.82      0.82      0.82    227694
-
-Conteo de predicciones en test:
-positive: 116342
-negative: 111352
-==============================
+Conteo de clases en test Kaggle:
+negative: 713030
+positive: 804928
