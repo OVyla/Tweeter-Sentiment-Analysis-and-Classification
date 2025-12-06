@@ -43,7 +43,46 @@ def lightgbm_multiclass(X_train, y_train, **params):
     # Train the model
     model.fit(X_train, y_train)
     return model
-
+# CatBoost OVR
+def catboost_ovr(X_train, y_train, **params):
+    """
+    CatBoost One-vs-Rest para clasificación multiclase.
+    """
+    if CatBoostClassifier is None:
+        raise ImportError("CatBoost no está instalado. Instala con 'pip install catboost'.")
+    from sklearn.multiclass import OneVsRestClassifier
+    default_params = {'random_state': 42, 'iterations': 100, 'verbose': 0}
+    final_params = {**default_params, **params}
+    base_model = CatBoostClassifier(**final_params)
+    model = OneVsRestClassifier(base_model)
+    model.fit(X_train, y_train)
+    return model
+# XGBoost multiclass
+def xgboost_multiclass(X_train, y_train, **params):
+    """
+    XGBoost nativo multiclass (objective='multi:softprob') para clasificación multiclase.
+    Convierte etiquetas string a números automáticamente.
+    """
+    if XGBClassifier is None:
+        raise ImportError("XGBoost no está instalado. Instala con 'pip install xgboost'.")
+    from sklearn.preprocessing import LabelEncoder
+    le = LabelEncoder()
+    y_train_enc = le.fit_transform(y_train)
+    num_class = len(le.classes_)
+    default_params = {
+        'random_state': 42,
+        'n_estimators': 100,
+        'objective': 'multi:softprob',
+        'num_class': num_class,
+        'use_label_encoder': False,
+        'eval_metric': 'mlogloss'
+    }
+    final_params = {**default_params, **params}
+    model = XGBClassifier(**final_params)
+    model.fit(X_train, y_train_enc)
+    # Adjuntar el label encoder al modelo para decodificar luego
+    model._label_encoder = le
+    return model
 def lightgbm_ovr(X_train, y_train, **params):
     """
     Trains a LightGBM One-vs-Rest classifier for multiclass classification.
@@ -202,4 +241,5 @@ def rf_one_vs_one(X_train, y_train, **params):
     model = OneVsOneClassifier(base_rf)
     # Train the model
     model.fit(X_train, y_train)
+
     return model
