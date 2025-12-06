@@ -1,0 +1,40 @@
+RESUMEN EJECUCIÓN
+Archivo externo: external_clean_balanced.csv
+Hiperparámetros: {'C': 2.0, 'max_iter': 500, 'penalty': 'l2', 'class_weight': 'balanced'}
+Tiempo total: 1 min 42.89 s
+==============================
+--- TRAIN ---
+Accuracy: 0.8435
+              precision    recall  f1-score   support
+
+    negative       0.85      0.83      0.84    531285
+    positive       0.84      0.85      0.84    531285
+
+    accuracy                           0.84   1062570
+   macro avg       0.84      0.84      0.84   1062570
+weighted avg       0.84      0.84      0.84   1062570
+--- VALIDATION ---
+Accuracy: 0.8195
+              precision    recall  f1-score   support
+
+    negative       0.83      0.81      0.82    113847
+    positive       0.81      0.83      0.82    113847
+
+    accuracy                           0.82    227694
+   macro avg       0.82      0.82      0.82    227694
+weighted avg       0.82      0.82      0.82    227694
+--- TEST ---
+Accuracy: 0.8196
+              precision    recall  f1-score   support
+
+    negative       0.83      0.81      0.82    113847
+    positive       0.81      0.83      0.82    113847
+
+    accuracy                           0.82    227694
+   macro avg       0.82      0.82      0.82    227694
+weighted avg       0.82      0.82      0.82    227694
+
+Conteo de predicciones en test:
+positive: 116342
+negative: 111352
+==============================
