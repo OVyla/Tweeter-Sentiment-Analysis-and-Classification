@@ -1,0 +1,58 @@
+RESUMEN RANDOM FOREST - Comparativa
+========================================
+
+>>> CatBoost Multiclass <<<
+
+=== CatBoost Multiclass ===
+--- TRAIN ---
+Accuracy: 0.5763
+Confusion Matrix:
+[[185410 166259  19602]
+ [ 64388 286557  10311]
+ [ 48270 155081 159018]]
+              precision    recall  f1-score   support
+
+    negative       0.62      0.50      0.55    371271
+     neutral       0.47      0.79      0.59    361256
+    positive       0.84      0.44      0.58    362369
+
+    accuracy                           0.58   1094896
+   macro avg       0.65      0.58      0.57   1094896
+weighted avg       0.65      0.58      0.57   1094896
+------------------------------------------------------------
+
+=== CatBoost Multiclass ===
+--- VALIDATION ---
+Accuracy: 0.5758
+Confusion Matrix:
+[[23077 20943  2389]
+ [ 8051 35802  1304]
+ [ 6020 19348 19928]]
+              precision    recall  f1-score   support
+
+    negative       0.62      0.50      0.55     46409
+     neutral       0.47      0.79      0.59     45157
+    positive       0.84      0.44      0.58     45296
+
+    accuracy                           0.58    136862
+   macro avg       0.65      0.58      0.57    136862
+weighted avg       0.65      0.58      0.57    136862
+------------------------------------------------------------
+
+=== CatBoost Multiclass ===
+--- TEST ---
+Accuracy: 0.5736
+Confusion Matrix:
+[[23016 21025  2368]
+ [ 8170 35727  1260]
+ [ 5958 19575 19764]]
+              precision    recall  f1-score   support
+
+    negative       0.62      0.50      0.55     46409
+     neutral       0.47      0.79      0.59     45157
+    positive       0.84      0.44      0.58     45297
+
+    accuracy                           0.57    136863
+   macro avg       0.64      0.57      0.57    136863
+weighted avg       0.64      0.57      0.57    136863
+------------------------------------------------------------

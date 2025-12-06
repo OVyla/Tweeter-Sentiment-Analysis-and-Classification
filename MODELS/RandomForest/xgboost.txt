@@ -1,0 +1,58 @@
+RESUMEN RANDOM FOREST - Comparativa
+========================================
+
+>>> XGBoost Multiclass <<<
+
+=== XGBoost Multiclass ===
+--- TRAIN ---
+Accuracy: 0.5913
+Confusion Matrix:
+[[196533 152133  22605]
+ [ 63030 283534  14692]
+ [ 48683 146338 167348]]
+              precision    recall  f1-score   support
+
+    negative       0.64      0.53      0.58    371271
+     neutral       0.49      0.78      0.60    361256
+    positive       0.82      0.46      0.59    362369
+
+    accuracy                           0.59   1094896
+   macro avg       0.65      0.59      0.59   1094896
+weighted avg       0.65      0.59      0.59   1094896
+------------------------------------------------------------
+
+=== XGBoost Multiclass ===
+--- VALIDATION ---
+Accuracy: 0.5893
+Confusion Matrix:
+[[24282 19342  2785]
+ [ 7937 35353  1867]
+ [ 6049 18234 21013]]
+              precision    recall  f1-score   support
+
+    negative       0.63      0.52      0.57     46409
+     neutral       0.48      0.78      0.60     45157
+    positive       0.82      0.46      0.59     45296
+
+    accuracy                           0.59    136862
+   macro avg       0.65      0.59      0.59    136862
+weighted avg       0.65      0.59      0.59    136862
+------------------------------------------------------------
+
+=== XGBoost Multiclass ===
+--- TEST ---
+Accuracy: 0.5894
+Confusion Matrix:
+[[24407 19233  2769]
+ [ 7955 35400  1802]
+ [ 6002 18435 20860]]
+              precision    recall  f1-score   support
+
+    negative       0.64      0.53      0.58     46409
+     neutral       0.48      0.78      0.60     45157
+    positive       0.82      0.46      0.59     45297
+
+    accuracy                           0.59    136863
+   macro avg       0.65      0.59      0.59    136863
+weighted avg       0.65      0.59      0.59    136863
+------------------------------------------------------------
