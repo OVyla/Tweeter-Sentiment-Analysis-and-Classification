@@ -63,7 +63,7 @@ def main():
         ("grid_search", model_grid_search, "nb_gridsearch.joblib"),
     ]
 
-    vectorizers_to_test = ['TFIDF', 'BOW']
+    vectorizers_to_test = ['TFIDF']
 
     for vec_method in vectorizers_to_test:
         data = load_and_vectorize_splits(method=vec_method)

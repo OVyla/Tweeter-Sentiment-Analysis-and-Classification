@@ -4,27 +4,33 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import vector_representation as vr
 
-# Load vectorized data
-X_train, X_val, X_test, _ = vr.load_tfidf(prefix="./VECTORES/tfidf")
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from AnalizarLimpiarDividir.vector_representation import load_and_vectorize_splits
 
+# Load vectorized data (TF-IDF)
+data = load_and_vectorize_splits(method='TFIDF')
+X_train_full = data["X_train"]
+X_val_full   = data["X_val"]
+X_test_full  = data["X_test"]
+y_train_full = data["y_train"]
+y_val_full   = data["y_val"]
+y_test_full  = data["y_test"]
 
-# Load labels and sample 20,000 rows from each set
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-train = pd.read_csv(os.path.join(base_dir, 'twitter_trainBALANCED.csv')).sample(frac=0.5, random_state=42)
-val = pd.read_csv(os.path.join(base_dir, 'twitter_valBALANCED.csv')).sample(frac=0.5, random_state=42)
-test = pd.read_csv(os.path.join(base_dir, 'twitter_testBALANCED.csv')).sample(frac=0.5, random_state=42)
-y_train = train['label'].reset_index(drop=True)
-y_val = val['label'].reset_index(drop=True)
-y_test = test['label'].reset_index(drop=True)
+# Sample 50%
+# We use the index from y_train sample to slice X_train
+train_sample = pd.Series(y_train_full).sample(frac=0.5, random_state=42)
+val_sample = pd.Series(y_val_full).sample(frac=0.5, random_state=42)
+test_sample = y_test_full.sample(frac=0.5, random_state=42)
 
+X_train = X_train_full[train_sample.index]
+y_train = train_sample.reset_index(drop=True)
 
-# Select the same sample indices from the vectorized data
-X_train = X_train[train.index]
-X_val = X_val[val.index]
-X_test = X_test[test.index]
+X_val = X_val_full[val_sample.index]
+y_val = val_sample.reset_index(drop=True)
+
+X_test = X_test_full[test_sample.index]
+y_test = test_sample.reset_index(drop=True)
 
 # Train KNN model
 knn = KNeighborsClassifier(

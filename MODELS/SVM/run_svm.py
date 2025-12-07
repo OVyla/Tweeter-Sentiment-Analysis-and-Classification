@@ -92,6 +92,7 @@ def main():
             print(f"Model: {model_name} | Vectorització: {vec_method} | vector_features=60000")
             print("------------------------------------------------------------\n")
 
+            model_file = f"{model_name}_{vec_method}.joblib"
             model_path = os.path.join(os.path.dirname(__file__), model_file)
 
             if os.path.exists(model_path):

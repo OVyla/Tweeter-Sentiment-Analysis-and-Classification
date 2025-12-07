@@ -6,33 +6,41 @@ import sys
 import os
 
 # Añadir la ruta al vector_representation si es necesario
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../..'))
+sys.path.insert(0, project_root)
 
-from vector_representation import load_tfidf
-from decision_tree_model import train_decision_tree
+from AnalizarLimpiarDividir.vector_representation import load_and_vectorize_splits
+from MODELS.DecisionTree.decision_tree_model import train_decision_tree
 
-# Cargar datos usando rutas absolutas basadas en la ubicación de este script
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-train = pd.read_csv(os.path.join(base_dir, 'twitter_trainBALANCED.csv'))
-val = pd.read_csv(os.path.join(base_dir, 'twitter_valBALANCED.csv'))
-test = pd.read_csv(os.path.join(base_dir, 'twitter_testBALANCED.csv'))
+# Directorios de salida
+graphs_dir = os.path.join(project_root, 'GRAFIQUES', 'DecisionTree')
+os.makedirs(graphs_dir, exist_ok=True)
 
-# Cargar datos vectorizados (TF-IDF) previamente guardados
-X_train, X_val, X_test, _ = load_tfidf(prefix="./VECTORES/tfidf")
+output_dir = os.path.join(project_root, 'MODELS', 'DecisionTree')
+os.makedirs(output_dir, exist_ok=True)
 
-y_train = train['label']
-y_val = val['label']
-y_test = test['label']
+# Cargar datos vectorizados (TF-IDF)
+data = load_and_vectorize_splits(method='TFIDF')
+X_train = data["X_train"]
+X_val   = data["X_val"]
+X_test  = data["X_test"]
+y_train = data["y_train"]
+y_val   = data["y_val"]
+y_test  = data["y_test"]
 
-OUTPUT_FILE = "output_decision_tree.txt"
+OUTPUT_FILE = os.path.join(output_dir, "output_decision_tree.txt")
 
 def save_report(f, model_name, title, y_true, y_pred):
-    f.write(f"\n=== {model_name} ===\n")
-    f.write(f"--- {title} ---\n")
-    f.write(f"Accuracy: {accuracy_score(y_true, y_pred):.4f}\n")
-    f.write(f"Confusion Matrix:\n{confusion_matrix(y_true, y_pred)}\n")
-    f.write(classification_report(y_true, y_pred))
-    f.write("-" * 60 + "\n")
+    report = f"\n=== {model_name} ===\n"
+    report += f"--- {title} ---\n"
+    report += f"Accuracy: {accuracy_score(y_true, y_pred):.4f}\n"
+    report += f"Confusion Matrix:\n{confusion_matrix(y_true, y_pred)}\n"
+    report += classification_report(y_true, y_pred)
+    report += "-" * 60 + "\n"
+    
+    f.write(report)
+    print(report)
 
 def plot_roc_curve(model, X, y, class_names, title, output_path):
     # Binarizar las etiquetas
@@ -95,8 +103,8 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         save_report(f, "Decision Tree", title, y, y_pred)
         # Graficar ROC y Precision-Recall solo para VALIDATION y TEST
         if title in ("VALIDATION", "TEST"):
-            roc_path = f"roc_curve_{title.lower()}.png"
-            pr_path = f"precision_recall_{title.lower()}.png"
+            roc_path = os.path.join(graphs_dir, f"roc_curve_{title.lower()}.png")
+            pr_path = os.path.join(graphs_dir, f"precision_recall_{title.lower()}.png")
             plot_roc_curve(model, X, y, class_names, title, roc_path)
             plot_precision_recall(model, X, y, class_names, title, pr_path)
             print(f"Guardada curva ROC en {roc_path} y Precision-Recall en {pr_path}")

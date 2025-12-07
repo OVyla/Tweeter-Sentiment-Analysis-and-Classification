@@ -10,7 +10,7 @@ OUTPUT_FILE = "benchmark.txt"
 MODELS_TO_RUN = [
     {
         "name": "Logistic Regression",
-        "script": "run_logistic.py",
+        "script": "run_logistic_models.py",
         "cwd": "LogisticRegression"
     },
     {
@@ -22,6 +22,22 @@ MODELS_TO_RUN = [
         "name": "Random Forest & Ensemble",
         "script": "run_random_forest.py",
         "cwd": "RandomForest"
+    },
+    {
+        "name": "Decision Tree",
+        "script": "run_decision_tree.py",
+        "cwd": "DecisionTree"
+    },
+    # Temporarily disabled due to AttributeError in run_knn.py
+    # {
+    #     "name": "K-Nearest Neighbors (KNN)",
+    #     "script": "run_knn.py",
+    #     "cwd": "KNN"
+    # },
+    {
+        "name": "Naive Bayes",
+        "script": "run_naive_bayes.py",
+        "cwd": "NaiveBayes"
     }
 ]
 
@@ -34,7 +50,8 @@ def main():
     
     # Get the absolute path to the MODELS directory, where this script is located
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    output_path = os.path.join(base_dir, '..', OUTPUT_FILE) # Save benchmark.txt in the project root
+    project_root = os.path.dirname(base_dir)
+    output_path = os.path.join(project_root, OUTPUT_FILE) # Save benchmark.txt in the project root
 
     # Initialize the output file
     try:
@@ -50,7 +67,7 @@ def main():
     for model in MODELS_TO_RUN:
         model_name = model["name"]
         script_path = os.path.join(base_dir, model["cwd"], model["script"])
-        working_dir = os.path.join(base_dir, model["cwd"])
+        working_dir = project_root
 
         print(f"\n--- Running: {model_name} ---")
         print(f"Executing: python {script_path}")
@@ -66,7 +83,7 @@ def main():
         try:
             # Execute the script as a subprocess
             process = subprocess.run(
-                ['python3', model['script']],
+                ['python3', script_path],
                 capture_output=True,
                 text=True,
                 cwd=working_dir,

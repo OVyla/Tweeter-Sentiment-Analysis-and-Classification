@@ -55,7 +55,7 @@ def main():
         ("ovr", model_one_vs_rest)
         #("grid", model_grid_search) # Excluded by default as it's very slow
     ]
-    vectorizers_to_test = ['TFIDF', 'BOW']
+    vectorizers_to_test = ['TFIDF']
 
     # --- Main Benchmark Loop ---
     for vec_method in vectorizers_to_test:
@@ -76,6 +76,8 @@ def main():
             print(f"Model: {model_name} | Vectorització: {vec_method}")
             print(f"============================================================\n")
             
+            # --- CORRECCIÓ: Definim el nom únic del fitxer ---
+            model_file = f"logistic_{model_name}_{vec_method}.joblib"
             model_path = os.path.join(log_dir, model_file)
 
             # --- Entrenar o carregar ---
