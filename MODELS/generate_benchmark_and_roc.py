@@ -1,10 +1,15 @@
 import os
 import sys
 import joblib
-import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import label_binarize
+
+try:
+    import plotly.graph_objects as go
+except ImportError:
+    print("Error: Plotly library is required for interactive plots. Please install it using 'pip install plotly'.")
+    sys.exit(1)
 
 # ==========================================
 # SETUP PATHS & IMPORTS
@@ -42,7 +47,13 @@ def generate_roc_curves():
         print("No .joblib models found in MODELS directory.")
         return
 
-    plt.figure(figsize=(12, 10))
+    # Initialize Plotly Figure
+    fig = go.Figure()
+    fig.add_shape(
+        type='line', line=dict(dash='dash', color='navy'),
+        x0=0, x1=1, y0=0, y1=1
+    )
+
     models_plotted = 0
     ranking_data = []
 
@@ -172,7 +183,15 @@ def generate_roc_curves():
             # Plot Macro-Average
             model_name = os.path.basename(rel_path).replace('.joblib', '')
             clean_name = model_name.replace('_', ' ').title()
-            plt.plot(fpr["macro"], tpr["macro"], lw=2, label=f'{clean_name} (AUC = {roc_auc["macro"]:.2f})')
+            
+            fig.add_trace(go.Scatter(
+                x=fpr["macro"], 
+                y=tpr["macro"],
+                mode='lines',
+                name=f'{clean_name} (AUC = {roc_auc["macro"]:.2f})',
+                hovertemplate=f'<b>{clean_name}</b><br>FPR: %{{x:.3f}}<br>TPR: %{{y:.3f}}<br>AUC: {roc_auc["macro"]:.2f}<extra></extra>'
+            ))
+
             models_plotted += 1
             print(f"  Successfully processed {rel_path} (Macro AUC={roc_auc['macro']:.2f})")
             
@@ -192,21 +211,22 @@ def generate_roc_curves():
             print(f"{i}. {name}: {score:.4f}")
         print("="*40 + "\n")
 
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Macro-Average ROC Curve Comparison (Validation Set)')
-        plt.legend(loc="lower right", fontsize='small')
-        plt.grid(alpha=0.3)
+        fig.update_layout(
+            title='Macro-Average ROC Curve Comparison (Validation Set)',
+            xaxis_title='False Positive Rate',
+            yaxis_title='True Positive Rate',
+            xaxis=dict(range=[0, 1]),
+            yaxis=dict(range=[0, 1.05]),
+            width=1000, height=800,
+            legend=dict(x=0.6, y=0.05)
+        )
 
         output_dir = os.path.join(project_root, 'GRAFIQUES', 'BENCHMARK')
         os.makedirs(output_dir, exist_ok=True)
-        output_path = os.path.join(output_dir, 'all_models_roc.png')
+        output_path = os.path.join(output_dir, 'all_models_roc.html')
 
-        plt.savefig(output_path)
-        print(f"\nROC plot saved to: {output_path}")
+        fig.write_html(output_path)
+        print(f"\nInteractive ROC plot saved to: {output_path}")
     else:
         print("\nNo models were successfully processed. No plot generated.")
 
