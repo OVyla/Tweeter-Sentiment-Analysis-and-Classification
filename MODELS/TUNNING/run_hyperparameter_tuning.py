@@ -1,167 +1,151 @@
 import os
 import sys
 import joblib
+import json
 import numpy as np
-import pandas as pd
-from sklearn.model_selection import GridSearchCV
+import warnings
+import optuna
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multiclass import OneVsRestClassifier, OneVsOneClassifier
+from sklearn.model_selection import cross_val_score
 
 # ==========================================
-# SETUP PATHS
+# CONFIGURACIÓ BÀSICA
 # ==========================================
+warnings.filterwarnings('ignore')
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, '../..'))
 sys.path.insert(0, project_root)
+os.chdir(project_root)
 
+# Importar dades
 try:
     from AnalizarLimpiarDividir.vector_representation import load_and_vectorize_splits
+    print("Loading TF-IDF data...")
+    # Assegura't que max_features quadra amb el que necessites
+    data = load_and_vectorize_splits(method='TFIDF', max_features=160000)
+    X_train = data['X_train']
+    y_train = data['y_train']
 except ImportError:
-    print("Error: Could not import 'load_and_vectorize_splits'. Check your directory structure.")
-    sys.exit(1)
+    sys.exit("Error: No s'ha pogut importar load_and_vectorize_splits")
 
-# Output directories
-output_dir = current_dir
-models_dir = os.path.join(output_dir, 'best_models')
+# Directoris de sortida
+models_dir = os.path.join(current_dir, 'best_models_optuna')
 os.makedirs(models_dir, exist_ok=True)
-results_file = os.path.join(output_dir, 'tuning_results.txt')
+results_file = os.path.join(current_dir, 'optuna_results.txt')
+params_file = os.path.join(current_dir, 'best_hyperparameters.json')
 
 # ==========================================
-# LOAD DATA
+# SUBSAMPLING (Vital per velocitat del Tuning)
 # ==========================================
-print("Loading TF-IDF data...")
-data = load_and_vectorize_splits(method='TFIDF')
-X_train_full = data['X_train']
-y_train_full = data['y_train']
-
-# ==========================================
-# SUBSET DATA FOR TUNING
-# ==========================================
-# Tuning on the full dataset is too slow. We use a representative subset.
-SAMPLE_SIZE = 20000 
-if X_train_full.shape[0] > SAMPLE_SIZE:
-    print(f"Subsampling training data to {SAMPLE_SIZE} samples for hyperparameter tuning...")
-    # Use pandas sampling if y_train is a Series, else numpy
-    if hasattr(y_train_full, 'sample'):
-        y_subset = y_train_full.sample(n=SAMPLE_SIZE, random_state=42)
-        X_subset = X_train_full[y_subset.index]
-    else:
-        indices = np.random.choice(X_train_full.shape[0], SAMPLE_SIZE, replace=False)
-        X_subset = X_train_full[indices]
-        y_subset = y_train_full[indices]
+# Utilitzem una mostra per decidir els hiperparàmetres ràpidament
+SAMPLE_SIZE = 10000
+if X_train.shape[0] > SAMPLE_SIZE:
+    print(f"Subsampling a {SAMPLE_SIZE} mostres per a la cerca d'hiperparàmetres...")
+    indices = np.random.choice(X_train.shape[0], SAMPLE_SIZE, replace=False)
+    X_subset = X_train[indices]
+    y_subset = y_train[indices]
 else:
-    X_subset = X_train_full
-    y_subset = y_train_full
+    X_subset = X_train
+    y_subset = y_train
 
 # ==========================================
-# DEFINE MODELS AND GRIDS
+# FUNCIÓ OBJECTIU (Lògica d'Optuna)
 # ==========================================
-# Note: For wrapped classifiers (OvR, OvO), parameters usually need 'estimator__' prefix
-# but sklearn's GridSearchCV can sometimes handle it if passed directly to the wrapper constructor 
-# or via the specific syntax. Here we define the base estimator with params where possible.
+def create_model_structure(trial, model_name):
+    """Defineix l'estructura i l'espai de cerca."""
+    
+    # --- LOGISTIC REGRESSION ---
+    if "logistic" in model_name:
+        C = trial.suggest_float("C", 0.01, 100, log=True)
+        solver = trial.suggest_categorical("solver", ["lbfgs", "saga"])
+        
+        # Base settings
+        lr_kwargs = {'C': C, 'solver': solver, 'max_iter': 500, 'n_jobs': -1}
+        
+        if "standard" in model_name:
+            return LogisticRegression(multi_class='multinomial', **lr_kwargs)
+        elif "ovr" in model_name:
+            return LogisticRegression(multi_class='ovr', **lr_kwargs)
+        elif "ovo" in model_name:
+            # OvO no admet n_jobs dins del base estimator si el wrapper ja en té
+            lr_kwargs['n_jobs'] = 1 
+            return OneVsOneClassifier(LogisticRegression(**lr_kwargs), n_jobs=-1)
 
-configs = [
-    {
-        "name": "logistic_standard_tfidf",
-        "model": LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000),
-        "params": {
-            'C': [0.1, 1, 10],
-            'solver': ['lbfgs', 'saga']
-        }
-    },
-    {
-        "name": "logistic_ovr_tfidf",
-        "model": LogisticRegression(multi_class='ovr', solver='lbfgs', max_iter=1000),
-        "params": {
-            'C': [0.1, 1, 10]
-        }
-    },
-    {
-        "name": "logistic_ovo_tfidf",
-        "model": OneVsOneClassifier(LogisticRegression(solver='lbfgs', max_iter=1000)),
-        "params": {
-            'estimator__C': [0.1, 1, 10]
-        }
-    },
-    {
-        "name": "svm_standard_tfidf",
-        "model": SVC(max_iter=2000), # Limit iter to prevent hanging
-        "params": {
-            'C': [0.1, 1, 10],
-            'kernel': ['linear', 'rbf']
-        }
-    },
-    {
-        "name": "svm_ovr_tfidf",
-        "model": OneVsRestClassifier(SVC(max_iter=2000)),
-        "params": {
-            'estimator__C': [0.1, 1, 10],
-            'estimator__kernel': ['linear', 'rbf']
-        }
-    },
-    {
-        "name": "svm_ovo_tfidf",
-        "model": OneVsOneClassifier(SVC(max_iter=2000)),
-        "params": {
-            'estimator__C': [0.1, 1, 10],
-            'estimator__kernel': ['linear', 'rbf']
-        }
-    },
-    {
-        "name": "random_forest_ovr",
-        "model": OneVsRestClassifier(RandomForestClassifier(random_state=42)),
-        "params": {
-            'estimator__n_estimators': [50, 100],
-            'estimator__max_depth': [10, 20, None]
-        }
-    }
+    # --- SVM (Molt lent) ---
+    elif "svm" in model_name:
+        C = trial.suggest_float("C", 0.1, 50, log=True)
+        kernel = trial.suggest_categorical("kernel", ["linear", "rbf"])
+        
+        # Limitem max_iter per evitar bloquejos eterns durant el tuning
+        svc_kwargs = {'C': C, 'kernel': kernel, 'max_iter': 1000}
+        
+        if "standard" in model_name:
+            return SVC(**svc_kwargs)
+        elif "ovr" in model_name:
+            # IMPORTANT: n_jobs=1 per evitar OOM (Out of Memory)
+            return OneVsRestClassifier(SVC(**svc_kwargs), n_jobs=1)
+        elif "ovo" in model_name:
+            # IMPORTANT: n_jobs=1 per evitar OOM
+            return OneVsOneClassifier(SVC(**svc_kwargs), n_jobs=1)
+
+    # --- RANDOM FOREST ---
+    elif "random_forest" in model_name:
+        n_estimators = trial.suggest_int("n_estimators", 50, 300)
+        max_depth = trial.suggest_int("max_depth", 10, 50)
+        
+        rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42, n_jobs=-1)
+        return OneVsRestClassifier(rf, n_jobs=-1)
+
+    return None
+
+def objective(trial):
+    model_name = trial.study.user_attrs["model_name"]
+    model = create_model_structure(trial, model_name)
+    
+    # Cross-validation ràpid (3 folds)
+    # IMPORTANT: n_jobs=1 aquí és vital. Si poses -1, multipliques la RAM per 3 (folds).
+    scores = cross_val_score(model, X_subset, y_subset, cv=3, scoring='accuracy', n_jobs=1)
+    return scores.mean()
+
+# ==========================================
+# EXECUCIÓ DEL BUCLE
+# ==========================================
+model_list = [
+    "logistic_standard", "logistic_ovr", "logistic_ovo",
+    "svm_standard", "svm_ovr", "svm_ovo",
+    "random_forest_ovr"
 ]
 
-# ==========================================
-# EXECUTE TUNING
-# ==========================================
+all_best_params = {}
+
 with open(results_file, 'w') as f:
-    f.write("HYPERPARAMETER TUNING RESULTS\n")
-    f.write("=============================\n\n")
+    f.write("OPTUNA OPTIMIZATION RESULTS\n===========================\n")
 
-print(f"Starting tuning for {len(configs)} models...")
-
-for config in configs:
-    name = config['name']
-    model = config['model']
-    params = config['params']
+for name in model_list:
+    print(f"\n🚀 Optimizing: {name}...")
     
-    print(f"\n--- Tuning {name} ---")
-    print(f"Grid: {params}")
+    # 1. OPTIMITZACIÓ (Amb mostra petita)
+    study = optuna.create_study(direction="maximize")
+    study.set_user_attr("model_name", name)
+    study.optimize(objective, n_trials=20) # 20 proves
     
-    try:
-        grid = GridSearchCV(model, params, cv=3, scoring='accuracy', n_jobs=6, verbose=1)
-        grid.fit(X_subset, y_subset)
-        
-        best_score = grid.best_score_
-        best_params = grid.best_params_
-        
-        print(f"Best Score: {best_score:.4f}")
-        print(f"Best Params: {best_params}")
-        
-        # Save results to text file
-        with open(results_file, 'a') as f:
-            f.write(f"Model: {name}\n")
-            f.write(f"Best Accuracy (CV): {best_score:.4f}\n")
-            f.write(f"Best Parameters: {best_params}\n")
-            f.write("-" * 40 + "\n")
-            
-        # Save best model
-        model_path = os.path.join(models_dir, f"{name}_best.joblib")
-        joblib.dump(grid.best_estimator_, model_path)
-        print(f"Saved best model to {model_path}")
-        
-    except Exception as e:
-        print(f"Error tuning {name}: {e}")
-        with open(results_file, 'a') as f:
-            f.write(f"Model: {name} - FAILED: {e}\n")
-            f.write("-" * 40 + "\n")
+    best_params = study.best_params
+    all_best_params[name] = best_params
+    
+    print(f"✅ Best params for {name}: {best_params}")
+    print(f"   Best Subset CV Score: {study.best_value:.4f}")
+    
+    with open(results_file, 'a') as f:
+        f.write(f"\nModel: {name}\n")
+        f.write(f"Best CV Score (Subset): {study.best_value:.4f}\n")
+        f.write(f"Params: {best_params}\n")
 
-print(f"\nTuning complete. Results saved to {results_file}")
+# Guardar tots els millors paràmetres en un JSON per al següent script
+with open(params_file, 'w') as f:
+    json.dump(all_best_params, f, indent=4)
+
+print(f"\n💾 Hyperparameters saved to {params_file}")
+print(f"🏁 Tuning finalitzat. Ara executa 'train_final_models.py' per entrenar amb tot el dataset.")

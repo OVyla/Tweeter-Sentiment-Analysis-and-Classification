@@ -1,0 +1,31 @@
+HYPERPARAMETER TUNING RESULTS
+=============================
+
+Model: logistic_standard_tfidf
+Best Accuracy (CV): 0.6990
+Best Parameters: {'C': 1, 'solver': 'lbfgs'}
+----------------------------------------
+Model: logistic_ovr_tfidf
+Best Accuracy (CV): 0.7002
+Best Parameters: {'C': 10}
+----------------------------------------
+Model: logistic_ovo_tfidf
+Best Accuracy (CV): 0.7007
+Best Parameters: {'estimator__C': 10}
+----------------------------------------
+Model: svm_standard_tfidf
+Best Accuracy (CV): 0.6741
+Best Parameters: {'C': 1, 'kernel': 'linear'}
+----------------------------------------
+Model: svm_ovr_tfidf
+Best Accuracy (CV): 0.6725
+Best Parameters: {'estimator__C': 0.1, 'estimator__kernel': 'linear'}
+----------------------------------------
+Model: svm_ovo_tfidf
+Best Accuracy (CV): 0.6764
+Best Parameters: {'estimator__C': 1, 'estimator__kernel': 'linear'}
+----------------------------------------
+Model: random_forest_ovr
+Best Accuracy (CV): 0.6925
+Best Parameters: {'estimator__max_depth': None, 'estimator__n_estimators': 100}
+----------------------------------------

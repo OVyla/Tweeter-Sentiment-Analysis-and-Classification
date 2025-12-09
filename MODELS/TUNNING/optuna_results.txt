@@ -1,0 +1,30 @@
+OPTUNA OPTIMIZATION RESULTS
+===========================
+
+Model: logistic_standard
+Best CV Score (Subset): 0.6685
+Params: {'C': 5.427304331622905, 'solver': 'lbfgs'}
+
+Model: logistic_ovr
+Best CV Score (Subset): 0.6697
+Params: {'C': 8.93714247824654, 'solver': 'saga'}
+
+Model: logistic_ovo
+Best CV Score (Subset): 0.6658
+Params: {'C': 40.18338953231148, 'solver': 'lbfgs'}
+
+Model: svm_standard
+Best CV Score (Subset): 0.6324
+Params: {'C': 3.478310825204969, 'kernel': 'linear'}
+
+Model: svm_ovr
+Best CV Score (Subset): 0.6316
+Params: {'C': 0.12385932311274343, 'kernel': 'linear'}
+
+Model: svm_ovo
+Best CV Score (Subset): 0.6365
+Params: {'C': 0.5622906719048895, 'kernel': 'linear'}
+
+Model: random_forest_ovr
+Best CV Score (Subset): 0.6523
+Params: {'n_estimators': 234, 'max_depth': 41}

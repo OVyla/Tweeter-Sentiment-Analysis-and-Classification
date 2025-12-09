@@ -1,0 +1,30 @@
+{
+    "logistic_standard": {
+        "C": 5.427304331622905,
+        "solver": "lbfgs"
+    },
+    "logistic_ovr": {
+        "C": 8.93714247824654,
+        "solver": "saga"
+    },
+    "logistic_ovo": {
+        "C": 40.18338953231148,
+        "solver": "lbfgs"
+    },
+    "svm_standard": {
+        "C": 3.478310825204969,
+        "kernel": "linear"
+    },
+    "svm_ovr": {
+        "C": 0.12385932311274343,
+        "kernel": "linear"
+    },
+    "svm_ovo": {
+        "C": 0.5622906719048895,
+        "kernel": "linear"
+    },
+    "random_forest_ovr": {
+        "n_estimators": 234,
+        "max_depth": 41
+    }
+}
