@@ -4,6 +4,7 @@ import joblib
 import numpy as np
 from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import label_binarize
+import matplotlib.pyplot as plt
 
 try:
     import plotly.graph_objects as go
@@ -47,35 +48,35 @@ def generate_roc_curves():
         print("No .joblib models found in MODELS directory.")
         return
 
-    # Initialize Plotly Figure
-    fig = go.Figure()
-    fig.add_shape(
+    # Initialize Plotly Figure (Interactive)
+    fig_interactive = go.Figure()
+    fig_interactive.add_shape(
         type='line', line=dict(dash='dash', color='navy'),
         x0=0, x1=1, y0=0, y1=1
     )
 
+    # Initialize Matplotlib Figure (Static)
+    plt.figure(figsize=(12, 10))
+
     models_plotted = 0
-    ranking_data = []
+    plot_data_list = []
 
     # Cache loaded data to avoid reloading for same config
     data_cache = {}
 
     for model_path in model_files:
         rel_path = os.path.relpath(model_path, project_root)
+        filename = os.path.basename(model_path).lower()
         
-        # Skip vectorizer cache files (they are in DATASETS/VECTORS usually, but just in case)
-        if 'tfidf' in os.path.basename(model_path).lower() and 'joblib' in os.path.basename(model_path).lower():
-             # Heuristic: if it looks like a vectorizer cache (e.g. tfidf_500.joblib), skip it
-             # But wait, some models might be named 'logistic_tfidf.joblib'.
-             # Vectorizer cache is usually in DATASETS/VECTORS. We are scanning MODELS.
-             pass
+        # Skip vectorizer cache files (usually start with tfidf_ or bow_)
+        if filename.startswith('tfidf_') or filename.startswith('bow_'):
+             continue
 
         try:
             print(f"Loading model: {rel_path} ...")
             model = joblib.load(model_path)
 
             # Determine method (BOW vs TFIDF)
-            filename = os.path.basename(model_path).lower()
             if 'bow' in filename:
                 method = 'BOW'
             else:
@@ -180,38 +181,57 @@ def generate_roc_curves():
             tpr["macro"] = mean_tpr
             roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
-            # Plot Macro-Average
+            # Store data for plotting later (sorted)
             model_name = os.path.basename(rel_path).replace('.joblib', '')
             clean_name = model_name.replace('_', ' ').title()
             
-            fig.add_trace(go.Scatter(
-                x=fpr["macro"], 
-                y=tpr["macro"],
-                mode='lines',
-                name=f'{clean_name} (AUC = {roc_auc["macro"]:.2f})',
-                hovertemplate=f'<b>{clean_name}</b><br>FPR: %{{x:.3f}}<br>TPR: %{{y:.3f}}<br>AUC: {roc_auc["macro"]:.2f}<extra></extra>'
-            ))
+            plot_data_list.append({
+                'name': clean_name,
+                'fpr': fpr["macro"],
+                'tpr': tpr["macro"],
+                'auc': roc_auc["macro"]
+            })
 
             models_plotted += 1
             print(f"  Successfully processed {rel_path} (Macro AUC={roc_auc['macro']:.2f})")
-            
-            ranking_data.append((clean_name, roc_auc["macro"]))
 
         except Exception as e:
             print(f"  [Error] Failed to process {rel_path}: {e}")
             continue
 
     if models_plotted > 0:
-        # Print Ranking
+        # Sort models by AUC in descending order
+        plot_data_list.sort(key=lambda x: x['auc'], reverse=True)
+
+        # Print Ranking and Add Traces
         print("\n" + "="*40)
         print("RANKING OF MODELS BY MACRO-AVERAGE AUC")
         print("="*40)
-        ranking_data.sort(key=lambda x: x[1], reverse=True)
-        for i, (name, score) in enumerate(ranking_data, 1):
+        
+        for i, data in enumerate(plot_data_list, 1):
+            name = data['name']
+            score = data['auc']
             print(f"{i}. {name}: {score:.4f}")
+            
+            # Add to Interactive Plot
+            fig_interactive.add_trace(go.Scatter(
+                x=data['fpr'], 
+                y=data['tpr'],
+                mode='lines',
+                name=f'{name} (AUC = {score:.2f})',
+                hovertemplate=f'<b>{name}</b><br>FPR: %{{x:.3f}}<br>TPR: %{{y:.3f}}<br>AUC: {score:.2f}<extra></extra>'
+            ))
+
+            # Add to Static Plot
+            plt.plot(data['fpr'], data['tpr'], lw=2, label=f'{name} (AUC = {score:.2f})')
+
         print("="*40 + "\n")
 
-        fig.update_layout(
+        output_dir = os.path.join(project_root, 'GRAFIQUES', 'BENCHMARK')
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Save Interactive Plot (HTML)
+        fig_interactive.update_layout(
             title='Macro-Average ROC Curve Comparison (Validation Set)',
             xaxis_title='False Positive Rate',
             yaxis_title='True Positive Rate',
@@ -220,13 +240,24 @@ def generate_roc_curves():
             width=1000, height=800,
             legend=dict(x=0.6, y=0.05)
         )
+        html_path = os.path.join(output_dir, 'all_models_roc.html')
+        fig_interactive.write_html(html_path)
+        print(f"Interactive ROC plot saved to: {html_path}")
 
-        output_dir = os.path.join(project_root, 'GRAFIQUES', 'BENCHMARK')
-        os.makedirs(output_dir, exist_ok=True)
-        output_path = os.path.join(output_dir, 'all_models_roc.html')
+        # Save Static Plot (PNG)
+        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Macro-Average ROC Curve Comparison (Validation Set)')
+        plt.legend(loc="lower right", fontsize='small')
+        plt.grid(alpha=0.3)
+        
+        png_path = os.path.join(output_dir, 'all_models_roc.png')
+        plt.savefig(png_path)
+        print(f"Static ROC plot saved to: {png_path}")
 
-        fig.write_html(output_path)
-        print(f"\nInteractive ROC plot saved to: {output_path}")
     else:
         print("\nNo models were successfully processed. No plot generated.")
 

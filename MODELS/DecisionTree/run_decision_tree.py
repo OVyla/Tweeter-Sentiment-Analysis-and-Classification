@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import os
+import joblib
 
 # Añadir la ruta al vector_representation si es necesario
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -88,6 +89,12 @@ model = train_decision_tree(
     min_samples_leaf=10,    # Valores originales
     random_state=42
 )
+
+# Save the model so it can be picked up by the benchmark generator
+# We append _TFIDF so the generator knows which vectorizer to use
+model_path = os.path.join(output_dir, "decision_tree_TFIDF.joblib")
+joblib.dump(model, model_path)
+print(f"Model saved to {model_path}")
 
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
     f.write("RESUMEN DECISION TREE\n")
