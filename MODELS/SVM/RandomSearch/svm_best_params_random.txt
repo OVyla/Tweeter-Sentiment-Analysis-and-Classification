@@ -1,0 +1,22 @@
+================================================================================
+MEJORES PARÁMETROS SVM (BÚSQUEDA ALEATORIA)
+================================================================================
+
+MEJORES PARÁMETROS:
+  tol: 0.0001
+  multi_class: ovr
+  max_iter: 1000
+  loss: squared_hinge
+  intercept_scaling: 10
+  fit_intercept: True
+  dual: False
+  C: 0.1
+
+Score CV (30%): 0.7687
+Train Accuracy (30%): 0.8320
+Test Accuracy (30%): 0.7843
+
+--- VALIDACIÓN CON 100% ---
+Train Accuracy (100%): 0.8248
+Test Accuracy (100%): 0.7999
+================================================================================
