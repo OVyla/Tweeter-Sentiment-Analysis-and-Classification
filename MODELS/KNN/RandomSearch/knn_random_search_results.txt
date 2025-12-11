@@ -1,0 +1,66 @@
+================================================================================
+K-NEAREST NEIGHBORS - RANDOM SEARCH (TODOS LOS PARÁMETROS)
+================================================================================
+
+Tiempo total de ejecución: 99 min 43.40 s
+Iteraciones de RandomizedSearchCV: 25
+K-fold cross-validation: 2
+Dataset para tuning: 3% (32846 muestras)
+Dataset para evaluación: 100% (1094896 muestras)
+
+--------------------------------------------------------------------------------
+MEJORES PARÁMETROS ENCONTRADOS
+--------------------------------------------------------------------------------
+  algorithm: brute
+  leaf_size: 30
+  metric: cosine
+  n_neighbors: 20
+  weights: distance
+
+  CV Score (3% dataset): 0.5893
+
+--------------------------------------------------------------------------------
+RESULTADOS EN 40% DE LOS DATASETS
+--------------------------------------------------------------------------------
+Train Accuracy (40%): 0.9988
+Validation Accuracy (40%): 0.6198
+Test Accuracy (40%): 0.6231
+
+--------------------------------------------------------------------------------
+TRAIN CLASSIFICATION REPORT (40%)
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       1.00      1.00      1.00    148608
+     neutral       1.00      1.00      1.00    144428
+    positive       1.00      1.00      1.00    144922
+
+    accuracy                           1.00    437958
+   macro avg       1.00      1.00      1.00    437958
+weighted avg       1.00      1.00      1.00    437958
+
+--------------------------------------------------------------------------------
+VALIDATION CLASSIFICATION REPORT (40%)
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.73      0.55      0.63     18657
+     neutral       0.51      0.76      0.61     17970
+    positive       0.72      0.55      0.62     18117
+
+    accuracy                           0.62     54744
+   macro avg       0.65      0.62      0.62     54744
+weighted avg       0.66      0.62      0.62     54744
+
+--------------------------------------------------------------------------------
+TEST CLASSIFICATION REPORT (40%)
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.74      0.56      0.63     18539
+     neutral       0.51      0.76      0.61     18043
+    positive       0.72      0.55      0.62     18163
+
+    accuracy                           0.62     54745
+   macro avg       0.66      0.62      0.62     54745
+weighted avg       0.66      0.62      0.62     54745
