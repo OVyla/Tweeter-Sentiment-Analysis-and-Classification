@@ -33,9 +33,9 @@ The repository is organized as follows:
 │   ├── SVM/
 │   ├── TUNNING/
 │   ├── ALL_MODELS_SUMMARY.txt
-│   ├── benchmark_accuracy.png
-│   ├── benchmark_f1.png
-│   └── benchmark_time.png
+│   ├── analize_benchmark.py
+│   ├── benchmark.py
+│   └── generate_benchmark_and_roc.py
 ├── requirements.txt          # Project dependencies
 └── README.md                 # This file
 ```
