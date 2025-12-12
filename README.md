@@ -18,12 +18,15 @@ The repository is organized as follows:
 │   └── ...
 ├── GRAFIQUES/                # Generated plots and visualizations
 │   ├── BENCHMARK/
+│   ├── DecisionTree/
 │   ├── EnsembleBoostingLightGBM/
 │   ├── NaiveBayes/
+│   ├── RandomForest/
 │   ├── SVM/
 │   ├── WORDCLOUD/
 │   ├── analisisDataset/
 │   └── logreg/
+parametres_KNN
 ├── KaggleBinario/             # Try binary dataset
 │   ├── clean_and_balance_kaggleBinario.py
 │   ├── output_Kaggle.txt
