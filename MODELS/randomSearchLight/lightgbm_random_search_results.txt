@@ -1,0 +1,116 @@
+================================================================================
+LIGHTGBM RANDOM SEARCH - HYPERPARAMETER TUNING
+================================================================================
+
+ESTRATEGIA:
+  Fase 1: Random Search en subset pequeño (27K = 20% val) - RAPIDO
+  Fase 2: Entrena modelo FINAL en train+val (1.2M) con esos params
+
+Tiempo total: 1 min 21.5 seg
+Combinaciones probadas: 20 (en subset de 27K muestras)
+Cross-validation folds: 2 (en subset)
+Modelo final entrenado en: train+val combinados (1.2M muestras)
+
+--------------------------------------------------------------------------------
+MEJORES PARAMETROS ENCONTRADOS (en subset de 27K)
+--------------------------------------------------------------------------------
+
+num_leaves: 20
+n_estimators: 150
+min_child_samples: 10
+max_depth: 20
+learning_rate: 0.1
+lambda_l2: 1.0
+lambda_l1: 1.0
+feature_fraction: 0.8
+bagging_fraction: 0.9
+
+CV Score en subset: 0.6909
+
+--------------------------------------------------------------------------------
+ACCURACIES
+--------------------------------------------------------------------------------
+
+Train: 0.7294
+Val:   0.7290
+Test:  0.7281
+
+--------------------------------------------------------------------------------
+TEST SET RESULTS
+--------------------------------------------------------------------------------
+
+CONFUSION MATRIX:
+[[32263 10864  3282]
+ [ 5657 36424  3076]
+ [ 3656 10681 30960]]
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+    negative       0.78      0.70      0.73     46409
+     neutral       0.63      0.81      0.71     45157
+    positive       0.83      0.68      0.75     45297
+
+    accuracy                           0.73    136863
+   macro avg       0.74      0.73      0.73    136863
+weighted avg       0.75      0.73      0.73    136863
+
+--------------------------------------------------------------------------------
+TOP 5 MEJORES CONFIGURACIONES PROBADAS
+--------------------------------------------------------------------------------
+
+
+#1: 0.6909 (+/- 0.0001)
+  num_leaves: 20
+  n_estimators: 150
+  min_child_samples: 10
+  max_depth: 20
+  learning_rate: 0.1
+  lambda_l2: 1.0
+  lambda_l1: 1.0
+  feature_fraction: 0.8
+  bagging_fraction: 0.9
+
+#2: 0.6855 (+/- 0.0014)
+  num_leaves: 20
+  n_estimators: 50
+  min_child_samples: 10
+  max_depth: 20
+  learning_rate: 0.15
+  lambda_l2: 0.5
+  lambda_l1: 0.0
+  feature_fraction: 1.0
+  bagging_fraction: 0.9
+
+#3: 0.6842 (+/- 0.0027)
+  num_leaves: 100
+  n_estimators: 150
+  min_child_samples: 10
+  max_depth: 10
+  learning_rate: 0.1
+  lambda_l2: 1.0
+  lambda_l1: 0.0
+  feature_fraction: 0.7
+  bagging_fraction: 1.0
+
+#4: 0.6826 (+/- 0.0027)
+  num_leaves: 31
+  n_estimators: 100
+  min_child_samples: 20
+  max_depth: 20
+  learning_rate: 0.15
+  lambda_l2: 0.0
+  lambda_l1: 0.5
+  feature_fraction: 0.7
+  bagging_fraction: 0.9
+
+#5: 0.6801 (+/- 0.0003)
+  num_leaves: 50
+  n_estimators: 150
+  min_child_samples: 10
+  max_depth: 15
+  learning_rate: 0.05
+  lambda_l2: 0.5
+  lambda_l1: 0.0
+  feature_fraction: 0.8
+  bagging_fraction: 0.9
