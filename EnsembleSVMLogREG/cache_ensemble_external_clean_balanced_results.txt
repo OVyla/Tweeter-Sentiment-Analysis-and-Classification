@@ -1,0 +1,21 @@
+================================================================================
+EVALUACIÓN DEL ENSEMBLE GUARDADO SOBRE external_clean_balanced.csv
+================================================================================
+
+Accuracy: 0.7631 (76.31%)
+
+              precision    recall  f1-score   support
+
+    negative       0.78      0.73      0.76    758979
+    positive       0.75      0.79      0.77    758979
+
+    accuracy                           0.76   1517958
+   macro avg       0.76      0.76      0.76   1517958
+weighted avg       0.76      0.76      0.76   1517958
+
+Confusion Matrix:
+[[557351 201628]
+ [157914 601065]]
+
+Neutrales en ground truth externo: 0 (0.0000%)
+Neutrales en predicción (antes de reclasificar): 465217 (30.6476%)

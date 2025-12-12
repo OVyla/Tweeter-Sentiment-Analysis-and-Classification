@@ -1,0 +1,21 @@
+================================================================================
+OPTIMIZACIÓN DE THRESHOLDS POR CLASE (VALIDACIÓN)
+================================================================================
+
+Thresholds óptimos: {'negative': np.float64(0.4300000000000001), 'neutral': np.float64(0.49800000000000016), 'positive': np.float64(0.4340000000000001)}
+Test Accuracy: 0.8043 (80.43%)
+
+              precision    recall  f1-score   support
+
+    negative       0.82      0.83      0.83     46409
+     neutral       0.75      0.78      0.76     45157
+    positive       0.85      0.80      0.82     45297
+
+    accuracy                           0.80    136863
+   macro avg       0.81      0.80      0.80    136863
+weighted avg       0.81      0.80      0.80    136863
+
+Confusion Matrix:
+[[38643  5556  2210]
+ [ 5610 35233  4314]
+ [ 2626  6464 36207]]

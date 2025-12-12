@@ -1,0 +1,110 @@
+================================================================================
+STACKING - LOGISTIC REGRESSION + SVM
+================================================================================
+
+Tiempo total de ejecución: 11 min 21.27 s
+Meta-learner: Logistic Regression
+Cross-validation folds: 3
+
+--------------------------------------------------------------------------------
+CONFIGURACIÓN DE MODELOS BASE
+--------------------------------------------------------------------------------
+
+1. LOGISTIC REGRESSION (Base Learner)
+  C: 2.0
+  max_iter: 500
+  penalty: l2
+  class_weight: balanced
+  multi_class: ovr
+  solver: lbfgs
+
+2. LINEAR SVM (Base Learner)
+  C: 0.1
+  tol: 0.0001
+  multi_class: ovr
+  max_iter: 1000
+  loss: squared_hinge
+  intercept_scaling: 10
+  fit_intercept: True
+  dual: False
+
+3. META-LEARNER (Logistic Regression)
+  C: 1.0
+  max_iter: 500
+  penalty: l2
+  class_weight: balanced
+  multi_class: ovr
+  solver: lbfgs
+
+--------------------------------------------------------------------------------
+RESULTADOS STACKING
+--------------------------------------------------------------------------------
+Train Accuracy: 0.8373
+Validation Accuracy: 0.8035
+Test Accuracy: 0.8045
+
+--------------------------------------------------------------------------------
+TRAIN CLASSIFICATION REPORT
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.85      0.86      0.86    371271
+     neutral       0.79      0.81      0.80    361256
+    positive       0.87      0.84      0.85    362369
+
+    accuracy                           0.84   1094896
+   macro avg       0.84      0.84      0.84   1094896
+weighted avg       0.84      0.84      0.84   1094896
+
+Confusion Matrix:
+[[319255  36085  15931]
+ [ 38449 292033  30774]
+ [ 15786  41126 305457]]
+
+--------------------------------------------------------------------------------
+VALIDATION CLASSIFICATION REPORT
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.82      0.83      0.83     46409
+     neutral       0.75      0.77      0.76     45157
+    positive       0.84      0.81      0.82     45296
+
+    accuracy                           0.80    136862
+   macro avg       0.80      0.80      0.80    136862
+weighted avg       0.80      0.80      0.80    136862
+
+Confusion Matrix:
+[[38371  5557  2481]
+ [ 5671 34818  4668]
+ [ 2493  6026 36777]]
+
+--------------------------------------------------------------------------------
+TEST CLASSIFICATION REPORT
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.83      0.83      0.83     46409
+     neutral       0.75      0.77      0.76     45157
+    positive       0.84      0.81      0.83     45297
+
+    accuracy                           0.80    136863
+   macro avg       0.81      0.80      0.80    136863
+weighted avg       0.81      0.80      0.80    136863
+
+Confusion Matrix:
+[[38486  5555  2368]
+ [ 5604 34846  4707]
+ [ 2403  6115 36779]]
+
+--------------------------------------------------------------------------------
+CÓMO FUNCIONA STACKING
+--------------------------------------------------------------------------------
+1. Los 2 modelos base (LR + SVM) entrenan en el dataset completo
+2. Durante cross-validation (3-fold), cada fold se usa para entrenar el meta-learner
+3. El meta-learner aprende a COMBINAR optimalmente las predicciones de LR + SVM
+4. En predicción, ambos modelos base predicen, y el meta-learner decide la clase final
+
+Ventaja sobre Voting:
+  - El meta-learner aprende cuándo confiar en LR vs SVM
+  - Típicamente da 1-2% más accuracy que soft voting
