@@ -26,7 +26,7 @@ The repository is organized as follows:
 │   ├── WORDCLOUD/
 │   ├── analisisDataset/
 │   └── logreg/
-parametres_KNN
+│   └── parametres_KNN
 ├── KaggleBinario/             # Try binary dataset
 │   ├── clean_and_balance_kaggleBinario.py
 │   ├── output_Kaggle.txt
