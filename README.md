@@ -24,6 +24,10 @@ The repository is organized as follows:
 │   ├── WORDCLOUD/
 │   ├── analisisDataset/
 │   └── logreg/
+├── KaggleBinario/             # Try binary dataset
+│   ├── clean_and_balance_kaggleBinario.py
+│   ├── output_Kaggle.txt
+│   └── run_kaggleLogReg.py
 ├── MODELS/                   # ML model implementations
 │   ├── DecisionTree/
 │   ├── KNN/
