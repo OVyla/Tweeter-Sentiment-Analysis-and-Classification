@@ -1,148 +1,135 @@
 import os
 import re
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # ============================================================
 # Config de paths
 # ============================================================
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-# Fitxer d'entrada amb els resultats
-INPUT_FILE = os.path.join( ROOT_DIR, "MODELS", "LogisticRegression", "output_features_tfidf.txt")
+# Input file with the results
+INPUT_FILE = os.path.join(ROOT_DIR, "MODELS", "LogisticRegression", "output_features_tfidf.txt")
 
-# Carpeta de sortida per les figures
+# Output folder
 OUTPUT_DIR = os.path.join(ROOT_DIR, "GRAFIQUES", "logreg")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 def parse_results(filepath):
     """
-    Llegeix el fitxer output_max_features_tfidf.txt i extreu:
+    Parses output_features_tfidf.txt and extracts:
       - max_features
-      - temps d'entrenament
-      - accuracy de VALIDATION
-
-    Torna tres llistes: max_features_list, val_acc_list, train_time_list
+      - TRAIN Accuracy
+      - VALIDATION Accuracy
     """
     max_features_list = []
+    train_acc_list = []
     val_acc_list = []
-    train_time_list = []
 
     current_max_features = None
-    current_train_time = None
-    current_section = None  # 'TRAIN', 'VALIDATION', 'TEST' o None
+    current_train_acc = None
+    current_section = None  # 'TRAIN', 'VALIDATION', 'TEST' or None
+
+    if not os.path.exists(filepath):
+        print(f"ERROR: File not found at {filepath}")
+        return [], [], []
 
     with open(filepath, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
 
-            # 1) Detectar línia amb "Max Features: X"
+            # 1) Detect "Max Features: X" (Start of a new block)
             if "Max Features:" in line:
-                # Exemple: "Model: standard | Vectorització: TFIDF | Max Features: 500"
+                # Reset temp variables for the new block
+                current_train_acc = None 
+                
                 match = re.search(r"Max Features:\s*([0-9]+)", line)
                 if match:
                     current_max_features = int(match.group(1))
                 continue
 
-            # 2) Detectar "Temps entrenament: XX.XX s"
-            if line.startswith("Temps entrenament:"):
-                # Exemple: "Temps entrenament: 14.41 s"
-                match = re.search(r"Temps entrenament:\s*([0-9.]+)", line)
-                if match:
-                    current_train_time = float(match.group(1))
-                continue
-
-            # 3) Detectar seccions TRAIN / VALIDATION / TEST
+            # 2) Detect Sections
             if line.startswith("--- TRAIN ---"):
                 current_section = "TRAIN"
                 continue
             if line.startswith("--- VALIDATION ---"):
                 current_section = "VALIDATION"
                 continue
-            if line.startswith("--- TEST ---"):
-                current_section = "TEST"
+            
+            # 3) Capture TRAIN Accuracy
+            if current_section == "TRAIN" and line.startswith("Accuracy:"):
+                match = re.search(r"Accuracy:\s*([0-9.]+)", line)
+                if match:
+                    current_train_acc = float(match.group(1))
                 continue
 
-            # 4) Quan estem a VALIDATION i trobem "Accuracy:"
+            # 4) Capture VALIDATION Accuracy & Save Record
+            # We assume Validation comes AFTER Train in the log file
             if current_section == "VALIDATION" and line.startswith("Accuracy:"):
-                # Exemple: "Accuracy: 0.6979"
                 match = re.search(r"Accuracy:\s*([0-9.]+)", line)
-                if match and current_max_features is not None and current_train_time is not None:
+                if match:
                     val_acc = float(match.group(1))
 
-                    max_features_list.append(current_max_features)
-                    val_acc_list.append(val_acc)
-                    train_time_list.append(current_train_time)
-
-                    # Després de guardar, podem continuar.
-                    # (No reiniciem res perquè el següent bloc tornarà
-                    #  a sobreescriure current_max_features/temps.)
+                    # Only append if we have all necessary data
+                    if current_max_features is not None and current_train_acc is not None:
+                        max_features_list.append(current_max_features)
+                        train_acc_list.append(current_train_acc)
+                        val_acc_list.append(val_acc)
                 continue
 
-    # Ordenem per max_features per si l'ordre al fitxer no és estrictament creixent
-    zipped = list(zip(max_features_list, val_acc_list, train_time_list))
+    # Sort by max_features to ensure the line plot is drawn correctly
+    if not max_features_list:
+        print("Warning: No data found. Check if the text file format matches the parser.")
+        return [], [], []
+
+    zipped = list(zip(max_features_list, train_acc_list, val_acc_list))
     zipped.sort(key=lambda x: x[0])
 
-    max_features_list = [z[0] for z in zipped]
-    val_acc_list = [z[1] for z in zipped]
-    train_time_list = [z[2] for z in zipped]
-
-    return max_features_list, val_acc_list, train_time_list
+    return zip(*zipped)
 
 
-def plot_validation_accuracy(max_features, val_acc, output_dir):
+def plot_accuracy_curves(max_features, train_acc, val_acc, output_dir):
     """
-    Dibuixa la recta Accuracy (VALIDATION) vs max_features.
+    Draws the standard Blue (Train) vs Orange (Val) plot.
     """
-    plt.figure(figsize=(8, 5))
-    plt.plot(max_features, val_acc, marker='o')
-    plt.xscale('log')  # opcional: com que els valors creixen molt, log va bé
-    plt.xlabel("Nombre de característiques (max_features)")
-    plt.ylabel("Accuracy (VALIDATION)")
-    plt.title("Logistic Regression TF-IDF: Accuracy de validació vs max_features")
+    plt.figure(figsize=(10, 6))
+    sns.set_style("whitegrid")
+
+    # Plot Lines
+    plt.plot(max_features, train_acc, 'o-', label='Train Accuracy', color='#1f77b4', linewidth=2)
+    plt.plot(max_features, val_acc, 's-', label='Validation Accuracy', color='#ff7f0e', linewidth=2)
+
+    # Log scale is usually better for max_features (500, 1000, 5000...)
+    plt.xscale('log') 
+    
+    plt.xlabel("Number of Features (max_features) [Log Scale]", fontsize=12)
+    plt.ylabel("Accuracy", fontsize=12)
+    plt.title("Logistic Regression Performance vs. Vocabulary Size", fontsize=14)
+    plt.legend(fontsize=11)
     plt.grid(True, which="both", linestyle="--", alpha=0.5)
 
-    out_path = os.path.join(output_dir, "logreg_tfidf_val_accuracy_vs_max_features.png")
+    # Save
+    out_path = os.path.join(output_dir, "logreg_tfidf_accuracy_vs_max_features.png")
     plt.tight_layout()
     plt.savefig(out_path, dpi=150)
     plt.close()
 
-    print(f"Figura guardada: {out_path}")
-
-
-def plot_training_time(max_features, train_time, output_dir):
-    """
-    Dibuixa la recta Temps d'entrenament vs max_features.
-    """
-    plt.figure(figsize=(8, 5))
-    plt.plot(max_features, train_time, marker='o')
-    plt.xscale('log')  # opcional
-    plt.xlabel("Nombre de característiques (max_features)")
-    plt.ylabel("Temps d'entrenament (s)")
-    plt.title("Logistic Regression TF-IDF: Temps d'entrenament vs max_fpyeatures")
-    plt.grid(True, which="both", linestyle="--", alpha=0.5)
-
-    out_path = os.path.join(output_dir, "logreg_tfidf_train_time_vs_max_features.png")
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=150)
-    plt.close()
-
-    print(f"Figura guardada: {out_path}")
+    print(f"Plot saved successfully: {out_path}")
 
 
 def main():
-    if not os.path.exists(INPUT_FILE):
-        raise FileNotFoundError(f"No s'ha trobat el fitxer d'entrada: {INPUT_FILE}")
+    max_features, train_acc, val_acc = parse_results(INPUT_FILE)
 
-    max_features_list, val_acc_list, train_time_list = parse_results(INPUT_FILE)
-
-    print("Max features:", max_features_list)
-    print("Validation accuracy:", val_acc_list)
-    print("Training time (s):", train_time_list)
-
-    plot_validation_accuracy(max_features_list, val_acc_list, OUTPUT_DIR)
-    plot_training_time(max_features_list, train_time_list, OUTPUT_DIR)
-
+    if max_features:
+        print(f"Found {len(max_features)} data points.")
+        print("Max Features:", list(max_features))
+        print("Train Acc:   ", list(train_acc))
+        print("Val Acc:     ", list(val_acc))
+        
+        plot_accuracy_curves(max_features, train_acc, val_acc, OUTPUT_DIR)
+    else:
+        print("No data extracted. Please check the content of 'output_features_tfidf.txt'.")
 
 if __name__ == "__main__":
     main()
