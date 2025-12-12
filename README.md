@@ -25,9 +25,14 @@ The repository is organized as follows:
 │   ├── analisisDataset/
 │   └── logreg/
 ├── MODELS/                   # ML model implementations
+│   ├── DecisionTree/
+│   ├── KNN/
 │   ├── LogisticRegression/
+│   ├── NaiveBayes/
 │   ├── RandomForest/
 │   ├── SVM/
+│   ├── TUNNING/
+│   ├── ALL_MODELS_SUMMARY.txt
 │   ├── benchmark_accuracy.png
 │   ├── benchmark_f1.png
 │   └── benchmark_time.png
