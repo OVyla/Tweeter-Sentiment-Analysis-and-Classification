@@ -11,8 +11,9 @@ import seaborn as sns
 
 # --- CONFIGURACIÓN ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, '..', '..', 'DATASETS', 'SPLIT')
-MODEL_DIR = os.path.join(BASE_DIR, '..', '..', 'DATASETS', 'MODELS_FINAL') # Carpeta para guardar modelos finales
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', '..'))
+DATA_PATH = os.path.join(PROJECT_ROOT, 'DATASETS', 'SPLIT')
+MODEL_DIR = os.path.join(PROJECT_ROOT, 'DATASETS', 'MODELS_FINAL') # Carpeta para guardar modelos finales
 os.makedirs(MODEL_DIR, exist_ok=True)
 
 def load_data():

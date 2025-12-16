@@ -4,15 +4,20 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../../'))
+
 # --- Cargar splits ---
-train = pd.read_csv(r"C:\Users\clara\Documentos\3º GED\AC\proyecto copia\AnalizarLimpiarDividir\twitter_trainBALANCED.csv")
-val = pd.read_csv(r"C:\Users\clara\Documentos\3º GED\AC\proyecto copia\AnalizarLimpiarDividir\twitter_valBALANCED.csv")
-test = pd.read_csv(r"C:\Users\clara\Documentos\3º GED\AC\proyecto copia\AnalizarLimpiarDividir\twitter_testBALANCED.csv")
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
+val = pd.read_csv(os.path.join(datasets_dir, "twitter_valBALANCED.csv"))
+test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
 
 # --- Vectorización TF-IDF mejorada ---
 vectorizer = TfidfVectorizer(max_features=80000, ngram_range=(1,3), sublinear_tf=True,min_df=2,max_df=0.95 )
@@ -56,7 +61,7 @@ plt.title("Validation Curve - Logistic Regression")
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("validation_curve_C.png", dpi=300)
+plt.savefig(os.path.join(current_dir, "validation_curve_C.png"), dpi=300)
 plt.show()
 
 print("Curva de validación guardada en 'validation_curve_C.png'")

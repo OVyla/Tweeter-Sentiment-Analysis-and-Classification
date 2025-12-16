@@ -7,16 +7,32 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import pandas as pd
+import numpy as np
+from sklearn.svm import LinearSVC
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import RandomizedSearchCV
+import sys, os
+import warnings
+warnings.filterwarnings('ignore')
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../../../'))
+
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 import vector_representation as vr
 
 # Cargar dataset
 print("Cargando dataset...")
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-train = pd.read_csv(os.path.join(base_dir, 'twitter_trainBALANCED.csv')).sample(frac=0.3, random_state=42)
-test = pd.read_csv(os.path.join(base_dir, 'twitter_testBALANCED.csv')).sample(frac=0.3, random_state=42)
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, 'twitter_trainBALANCED.csv')).sample(frac=0.3, random_state=42)
+test = pd.read_csv(os.path.join(datasets_dir, 'twitter_testBALANCED.csv')).sample(frac=0.3, random_state=42)
 
-X_train_full, _, X_test_full, _ = vr.load_tfidf(prefix=os.path.join(base_dir, "VECTORES/tfidf"))
+vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+X_train_full, _, X_test_full, _ = vr.load_tfidf(prefix=vectors_path)
 X_train = X_train_full[train.index]
 X_test = X_test_full[test.index]
 y_train = train['label']
@@ -79,10 +95,10 @@ print(f"\n{'='*80}")
 print(f"VALIDACIÓN CON DATASET COMPLETO (100%)")
 print(f"{'='*80}")
 
-train_full = pd.read_csv(os.path.join(base_dir, 'twitter_trainBALANCED.csv'))
-test_full = pd.read_csv(os.path.join(base_dir, 'twitter_testBALANCED.csv'))
+train_full = pd.read_csv(os.path.join(datasets_dir, 'twitter_trainBALANCED.csv'))
+test_full = pd.read_csv(os.path.join(datasets_dir, 'twitter_testBALANCED.csv'))
 
-X_train_full_all, _, X_test_full_all, _ = vr.load_tfidf(prefix=os.path.join(base_dir, "VECTORES/tfidf"))
+X_train_full_all, _, X_test_full_all, _ = vr.load_tfidf(prefix=vectors_path)
 X_train_full = X_train_full_all[train_full.index]
 X_test_full = X_test_full_all[test_full.index]
 y_train_full = train_full['label']
@@ -104,11 +120,11 @@ print(f"{'='*80}\n")
 
 # Guardar resultados
 results_df = pd.DataFrame(random_search.cv_results_)
-results_df.to_csv('svm_random_search_results.csv', index=False)
+results_df.to_csv(os.path.join(current_dir, 'svm_random_search_results.csv'), index=False)
 print("✓ Resultados del Random Search guardados en: svm_random_search_results.csv")
 
 # Guardar los mejores parámetros en un archivo de texto
-with open('svm_best_params_random.txt', 'w') as f:
+with open(os.path.join(current_dir, 'svm_best_params_random.txt'), 'w') as f:
     f.write("="*80 + "\n")
     f.write("MEJORES PARÁMETROS SVM (BÚSQUEDA ALEATORIA)\n")
     f.write("="*80 + "\n\n")

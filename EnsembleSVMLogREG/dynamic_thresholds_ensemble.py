@@ -6,11 +6,25 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')
 
+import pandas as pd
+import numpy as np
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import joblib
+import sys, os
+import warnings
+warnings.filterwarnings('ignore')
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
 # Añadir MODELOS al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 import vector_representation as vr
 
-OUTPUT_FILE = "dynamic_thresholds_ensemble_results.txt"
+OUTPUT_FILE = os.path.join(current_dir, "dynamic_thresholds_ensemble_results.txt")
 
 print("\n" + "="*80)
 print("OPTIMIZACIÓN DE THRESHOLDS POR CLASE (VALIDACIÓN)")
@@ -18,14 +32,15 @@ print("="*80)
 
 # 1. Cargar datasets
 print("\n[1/4] Cargando datasets...")
-base_path = "../../"
-train = pd.read_csv(base_path + "twitter_trainBALANCED.csv")
-val = pd.read_csv(base_path + "twitter_valBALANCED.csv")
-test = pd.read_csv(base_path + "twitter_testBALANCED.csv")
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
+val = pd.read_csv(os.path.join(datasets_dir, "twitter_valBALANCED.csv"))
+test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
 
 # 2. Cargar vectores TF-IDF
 print("[2/4] Cargando vectores TF-IDF...")
-X_train, X_val, X_test, _ = vr.load_tfidf(prefix=base_path + "VECTORES/tfidf")
+vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+X_train, X_val, X_test, _ = vr.load_tfidf(prefix=vectors_path)
 y_val = val['label']
 y_test = test['label']
 
@@ -34,8 +49,8 @@ print(f"  - Test: {X_test.shape}")
 
 # 3. Cargar modelos base del cache
 print("\n[3/4] Cargando modelos base desde caché...")
-lr_model = joblib.load('cache_lr_model.joblib')
-svm_model = joblib.load('cache_svm_model.joblib')
+lr_model = joblib.load(os.path.join(current_dir, 'cache_lr_model.joblib'))
+svm_model = joblib.load(os.path.join(current_dir, 'cache_svm_model.joblib'))
 print("  ✓ LR y SVM cargados del caché")
 
 # Weighted voting óptimo (según tu análisis)

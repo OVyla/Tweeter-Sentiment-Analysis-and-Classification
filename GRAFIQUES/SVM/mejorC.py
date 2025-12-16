@@ -4,13 +4,23 @@ import matplotlib.pyplot as plt
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../../'))
+
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 import vector_representation as vr
 
 # Cargar todo el dataset para tuning completo
-train = pd.read_csv("twitter_trainBALANCED.csv")
-test = pd.read_csv("twitter_testBALANCED.csv")
-X_train_full, _, X_test_full, _ = vr.load_tfidf(prefix="VECTORES/tfidf")
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
+test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
+
+vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+X_train_full, _, X_test_full, _ = vr.load_tfidf(prefix=vectors_path)
 X_train = X_train_full[train.index]
 X_test = X_test_full[test.index]
 y_train = train['label']
@@ -57,7 +67,7 @@ plt.title('Evolución de la accuracy según C (LinearSVC)')
 plt.legend()
 plt.grid(True, which='both', axis='x')
 plt.tight_layout()
-plt.savefig('svm_tuning_C.png')
+plt.savefig(os.path.join(current_dir, 'svm_tuning_C.png'))
 plt.close()
 print('Guardada gráfica svm_tuning_C.png')
 if failed:

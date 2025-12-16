@@ -3,16 +3,19 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 import joblib 
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
 # ---------------------------
 # Config per als splits
 # ---------------------------
-INPUT_DIR = "DATASETS/SPLIT"
+INPUT_DIR = os.path.join(project_root, "DATASETS", "SPLIT")
 TRAIN_FILE = "twitter_trainBALANCED.csv"
 VAL_FILE   = "twitter_valBALANCED.csv"
 TEST_FILE  = "twitter_testBALANCED.csv"
 
 # Carpeta per guardar les representacions
-CACHE_DIR = "DATASETS/VECTORS"
+CACHE_DIR = os.path.join(project_root, "DATASETS", "VECTORS")
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 

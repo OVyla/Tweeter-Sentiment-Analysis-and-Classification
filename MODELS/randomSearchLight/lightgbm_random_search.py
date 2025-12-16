@@ -7,7 +7,22 @@ import time
 import warnings
 warnings.filterwarnings('ignore')
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import sys, os
+import time
+import warnings
+warnings.filterwarnings('ignore')
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../../'))
+
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 from vector_representation import load_tfidf
 
 try:
@@ -16,7 +31,7 @@ except ImportError:
     print("ERROR: LightGBM no está instalado. Instala con: pip install lightgbm")
     sys.exit(1)
 
-OUTPUT_FILE = "lightgbm_random_search_results.txt"
+OUTPUT_FILE = os.path.join(current_dir, "lightgbm_random_search_results.txt")
 
 print("\n" + "="*80)
 print("LIGHTGBM RANDOM SEARCH - HIPERPARAMETER TUNING")
@@ -24,14 +39,15 @@ print("="*80)
 
 # Cargar datos
 print("\n[PASO 1/5] Cargando CSV...")
-base_path = "../../"
-train = pd.read_csv(base_path + "twitter_trainBALANCED.csv")
-val = pd.read_csv(base_path + "twitter_valBALANCED.csv")
-test = pd.read_csv(base_path + "twitter_testBALANCED.csv")
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
+val = pd.read_csv(os.path.join(datasets_dir, "twitter_valBALANCED.csv"))
+test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
 print("  ✓ CSVs cargados")
 
 print("\n[PASO 2/5] Cargando vectores TF-IDF...")
-X_train, X_val, X_test, _ = load_tfidf(prefix=base_path + "VECTORES/tfidf")
+vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+X_train, X_val, X_test, _ = load_tfidf(prefix=vectors_path)
 y_train = train['label']
 y_val = val['label']
 y_test = test['label']

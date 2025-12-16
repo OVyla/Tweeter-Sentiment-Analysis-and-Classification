@@ -9,14 +9,20 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Añadir MODELOS al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../../../'))
+
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 import vector_representation as vr
 
 # ==========================================
 # CONFIGURACIÓN
 # ==========================================
-OUTPUT_FILE = "knn_random_search_results.txt"
-CSV_RESULTS = "knn_random_search_results.csv"
+OUTPUT_FILE = os.path.join(current_dir, "knn_random_search_results.txt")
+CSV_RESULTS = os.path.join(current_dir, "knn_random_search_results.csv")
 N_ITER = 25  # Número de combinaciones aleatorias (reducido - KNN es lento)
 SAMPLE_SIZE = 0.03  # 3% del dataset para tuning (KNN muy costoso)
 CV_FOLDS = 2  # 2-fold cross-validation (más rápido)
@@ -33,14 +39,15 @@ def main():
     
     # 1. Cargar datasets
     print("\n[1/5] Cargando datasets...")
-    base_path = "../../"
-    train = pd.read_csv(base_path + "twitter_trainBALANCED.csv")
-    val = pd.read_csv(base_path + "twitter_valBALANCED.csv")
-    test = pd.read_csv(base_path + "twitter_testBALANCED.csv")
+    datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+    train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
+    val = pd.read_csv(os.path.join(datasets_dir, "twitter_valBALANCED.csv"))
+    test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
     
     # 2. Cargar vectores TF-IDF
     print("[2/5] Cargando vectores TF-IDF...")
-    X_train_full, X_val_full, X_test_full, _ = vr.load_tfidf(prefix=base_path + "VECTORES/tfidf")
+    vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+    X_train_full, X_val_full, X_test_full, _ = vr.load_tfidf(prefix=vectors_path)
     y_train_full = train['label']
     y_val_full = val['label']
     y_test_full = test['label']

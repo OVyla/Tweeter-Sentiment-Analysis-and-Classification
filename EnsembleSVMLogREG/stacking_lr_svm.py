@@ -12,14 +12,33 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')
 
+import pandas as pd
+import numpy as np
+import time
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.ensemble import StackingClassifier
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+import sys, os
+import warnings
+warnings.filterwarnings('ignore')
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
 # Añadir MODELOS al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 import vector_representation as vr
 
 # ==========================================
 # CONFIGURACIÓN
 # ==========================================
-OUTPUT_FILE = "stacking_lr_svm_results.txt"
+OUTPUT_FILE = os.path.join(current_dir, "stacking_lr_svm_results.txt")
 start_time = time.time()
 
 print("\n" + "="*80)
@@ -28,14 +47,15 @@ print("="*80)
 
 # 1. Cargar datasets
 print("\n[1/4] Cargando datasets...")
-base_path = "../../"
-train = pd.read_csv(base_path + "twitter_trainBALANCED.csv")
-val = pd.read_csv(base_path + "twitter_valBALANCED.csv")
-test = pd.read_csv(base_path + "twitter_testBALANCED.csv")
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
+val = pd.read_csv(os.path.join(datasets_dir, "twitter_valBALANCED.csv"))
+test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
 
 # 2. Cargar vectores TF-IDF
 print("[2/4] Cargando vectores TF-IDF...")
-X_train, X_val, X_test, _ = vr.load_tfidf(prefix=base_path + "VECTORES/tfidf")
+vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+X_train, X_val, X_test, _ = vr.load_tfidf(prefix=vectors_path)
 y_train = train['label']
 y_val = val['label']
 y_test = test['label']
@@ -109,11 +129,11 @@ stacking.fit(X_train, y_train)
 print("  ✓ Stacking entrenado exitosamente")
 # Guardar modelo stacking en caché justo después de entrenar
 
-joblib.dump(stacking, 'cache_stacking_model.joblib')
+joblib.dump(stacking, os.path.join(current_dir, 'cache_stacking_model.joblib'))
 print("\n✓ Modelo stacking guardado en cache_stacking_model.joblib")
 # Guardar modelo stacking en caché justo después de entrenar
 import joblib
-joblib.dump(stacking, 'cache_stacking_model.joblib')
+joblib.dump(stacking, os.path.join(current_dir, 'cache_stacking_model.joblib'))
 print("\n✓ Modelo stacking guardado en cache_stacking_model.joblib")
 
 # Predicciones

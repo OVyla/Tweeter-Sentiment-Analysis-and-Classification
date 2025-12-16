@@ -264,6 +264,9 @@ def mark_obvious_spam(df: pd.DataFrame, column: str = 'text',
 
 
 if __name__ == "__main__":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
     # Descargar recursos de nltk si no están
     try:
         nltk.data.find('corpora/wordnet')
@@ -279,7 +282,7 @@ if __name__ == "__main__":
 
     # --- Cargar dataset ---
     df = pd.read_csv(
-        "DATASETS/twitter_balancedNOCLEAN.csv"
+        os.path.join(project_root, "DATASETS", "twitter_balancedNOCLEAN.csv")
     )
 
     # --- Aplicar pipeline de limpieza ---
@@ -300,4 +303,4 @@ if __name__ == "__main__":
     df = remove_duplicates(df)
 
     # --- Guardar dataset limpio ---
-    df.to_csv("DATASETS/twitter_balancedCLEAN.csv", index=False)
+    df.to_csv(os.path.join(project_root, "DATASETS", "twitter_balancedCLEAN.csv"), index=False)

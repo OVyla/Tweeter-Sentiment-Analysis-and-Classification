@@ -6,11 +6,25 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')
 
+import pandas as pd
+import numpy as np
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+import joblib
+import sys, os
+import warnings
+warnings.filterwarnings('ignore')
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
 # Añadir MODELOS al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 import vector_representation as vr
 
-OUTPUT_FILE = "cache_ensemble_external_clean_balanced_results.txt"
+OUTPUT_FILE = os.path.join(current_dir, "cache_ensemble_external_clean_balanced_results.txt")
 
 print("\n" + "="*80)
 print("EVALUACIÓN DEL ENSEMBLE GUARDADO SOBRE external_clean_balanced.csv")
@@ -18,22 +32,38 @@ print("="*80)
 
 # 1. Cargar external_clean_balanced.csv
 print("\n[1/3] Cargando external_clean_balanced.csv...")
-external = pd.read_csv("../../external_clean_balanced.csv")
+# Asumiendo que está en la raíz del proyecto o en DATASETS. Ajustar según ubicación real.
+external_csv_path = os.path.join(project_root, "external_clean_balanced.csv")
+if not os.path.exists(external_csv_path):
+     external_csv_path = os.path.join(project_root, "DATASETS", "external_clean_balanced.csv")
+
+if os.path.exists(external_csv_path):
+    external = pd.read_csv(external_csv_path)
+else:
+    print(f"Error: No se encuentra 'external_clean_balanced.csv' en {project_root} ni en DATASETS.")
+    # Fallback para evitar crash inmediato si es solo prueba
+    external = pd.DataFrame(columns=['text', 'label'])
 
 # 2. Cargar vectores TF-IDF para external
 
 print("[2/3] Cargando vectorizador TF-IDF y transformando external...")
 # Asume que el archivo tiene una columna 'text' y 'label'
 
-vectorizer = joblib.load("../../VECTORES/tfidf_vectorizer.pkl")
-X_external = vectorizer.transform(external['text'])
-y_external = external['label']
+vectorizer_path = os.path.join(project_root, "DATASETS", "VECTORS", "tfidf_vectorizer.pkl")
+vectorizer = joblib.load(vectorizer_path)
+if not external.empty:
+    X_external = vectorizer.transform(external['text'])
+    y_external = external['label']
+else:
+    X_external = []
+    y_external = []
 
-print(f"  - External: {X_external.shape}")
+print(f"  - External: {X_external.shape if not external.empty else (0,0)}")
 
 # 3. Cargar ensemble desde cache
 print("\n[3/3] Cargando ensemble desde cache...")
-ensemble = joblib.load('cache_ensemble_model.joblib')
+ensemble_path = os.path.join(current_dir, 'cache_ensemble_model.joblib')
+ensemble = joblib.load(ensemble_path)
 print("  ✓ Ensemble cargado")
 
 # Evaluar

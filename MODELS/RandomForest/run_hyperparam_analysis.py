@@ -11,8 +11,9 @@ import time
 
 # --- CONFIGURATION ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, '..', '..', 'DATASETS', 'SPLIT')
-OUTPUT_PLOT_DIR = os.path.join(BASE_DIR, '..', '..', 'GRAFIQUES', 'RandomForest', 'Optimization')
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', '..'))
+DATA_PATH = os.path.join(PROJECT_ROOT, 'DATASETS', 'SPLIT')
+OUTPUT_PLOT_DIR = os.path.join(PROJECT_ROOT, 'GRAFIQUES', 'RandomForest', 'Optimization')
 os.makedirs(OUTPUT_PLOT_DIR, exist_ok=True)
 
 # !!! OPTIMIZATION: TRAIN ON A SUBSET !!!

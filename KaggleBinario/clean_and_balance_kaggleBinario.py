@@ -1,4 +1,14 @@
 import pandas as pd
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 from clean_dataset import (
     lowercase_strip, remove_punctuation_space, replace_links, remove_mentions,
     remove_currency, normalize_laughs_en, normalize_repeated_chars, fix_abbr_en,
@@ -6,10 +16,14 @@ from clean_dataset import (
 )
 
 # --- CONFIGURACIÓN ---
-EXTERNAL_CSV = "training.1600000.processed.noemoticon.csv"
+EXTERNAL_CSV_NAME = "training.1600000.processed.noemoticon.csv"
+EXTERNAL_CSV = os.path.join(current_dir, EXTERNAL_CSV_NAME)
+if not os.path.exists(EXTERNAL_CSV):
+    EXTERNAL_CSV = os.path.join(project_root, 'DATASETS', EXTERNAL_CSV_NAME)
+
 TEXT_COL_IDX = 5
 LABEL_COL_IDX = 0
-OUTPUT_CSV = "external_clean_balanced.csv"
+OUTPUT_CSV = os.path.join(current_dir, "external_clean_balanced.csv")
 
 # --- Cargar y limpiar ---
 df = pd.read_csv(EXTERNAL_CSV, header=None, encoding='latin-1')

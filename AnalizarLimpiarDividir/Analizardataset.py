@@ -6,8 +6,12 @@ Muestra estadísticas, distribución de clases, ejemplos y duplicados.
 
 import pandas as pd
 import numpy as np
+import os
 
-DATA_PATH = "twitter_balancedCLEAN.csv"  # nuevo archivo multiclass
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
+DATA_PATH = os.path.join(project_root, "DATASETS", "twitter_balancedCLEAN.csv")  # nuevo archivo multiclass
 
 def cargar_dataset(path):
     """Carga el dataset y lanza error si no existe."""

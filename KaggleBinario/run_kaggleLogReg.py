@@ -2,25 +2,48 @@
 
 import pandas as pd
 import joblib
-import logistic_regression as lr
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+sys.path.append(os.path.join(project_root, 'MODELS', 'LogisticRegression'))
+
+import logistic_regression as lr
 import vector_representation as vr
 
 # 1. Cargar datasets
-train = pd.read_csv("twitter_trainBALANCED.csv")
-df_kaggle = pd.read_csv("external_clean_balanced.csv")
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
+
+external_csv_path = os.path.join(current_dir, "external_clean_balanced.csv")
+if not os.path.exists(external_csv_path):
+     external_csv_path = os.path.join(project_root, "external_clean_balanced.csv")
+
+if os.path.exists(external_csv_path):
+    df_kaggle = pd.read_csv(external_csv_path)
+else:
+    print("Warning: external_clean_balanced.csv not found.")
+    df_kaggle = pd.DataFrame(columns=['text', 'label'])
 
 # 2. Cargar vectores TF-IDF ya guardados
-X_train, _, _, _ = vr.load_tfidf(prefix="./VECTORES/tfidf")
+vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+X_train, _, _, _ = vr.load_tfidf(prefix=vectors_path)
 y_train = train['label']
 
 # 3. Vectorizar el test externo usando el mismo vectorizador
-vectorizer = joblib.load("./VECTORES/tfidf_vectorizer.pkl")
-X_test = vectorizer.transform(df_kaggle.iloc[:, 0])
-y_test = df_kaggle.iloc[:, 1]
-
+vectorizer_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf_vectorizer.pkl')
+if os.path.exists(vectorizer_path) and not df_kaggle.empty:
+    vectorizer = joblib.load(vectorizer_path)
+    X_test = vectorizer.transform(df_kaggle.iloc[:, 0])
+    y_test = df_kaggle.iloc[:, 1]
+else:
+    X_test = []
+    y_test = []
 
 # 4. Entrenar el modelo con tu train
 HYPERPARAMETERS = {
@@ -33,7 +56,10 @@ model = lr.model_one_vs_rest(X_train, y_train, **HYPERPARAMETERS)
 
 
 # 5. Predecir sobre el test de Kaggle
-test_pred = model.predict(X_test)
+if len(X_test) > 0:
+    test_pred = model.predict(X_test)
+else:
+    test_pred = []
 
 from collections import Counter
 
@@ -45,7 +71,7 @@ output_lines.append(f"Número de predicciones 'neutral' ANTES de reasignar: {neu
 output_lines.append(f"Proporción de 'neutral' ANTES de reasignar: {proportion_neutral:.4f}")
 
 # 5b. Reasignar "neutral" a la clase con mayor probabilidad entre positive/negative
-if hasattr(model, 'predict_proba'):
+if hasattr(model, 'predict_proba') and len(X_test) > 0:
     proba = model.predict_proba(X_test)
     classes = model.classes_
     idx_neutral = list(classes).index('neutral') if 'neutral' in classes else None
@@ -68,12 +94,13 @@ if hasattr(model, 'predict_proba'):
 # 6. Analizar resultados
 from sklearn.metrics import classification_report, accuracy_score
 
-output_lines.append(f"Accuracy en test Kaggle: {accuracy_score(y_test, test_pred):.4f}")
-output_lines.append(classification_report(y_test, test_pred))
-output_lines.append("Conteo de clases en test Kaggle:")
-for clase, count in Counter(test_pred).items():
-    output_lines.append(f"{clase}: {count}")
+if len(y_test) > 0 and len(test_pred) > 0:
+    output_lines.append(f"Accuracy en test Kaggle: {accuracy_score(y_test, test_pred):.4f}")
+    output_lines.append(classification_report(y_test, test_pred))
+    output_lines.append("Conteo de clases en test Kaggle:")
+    for clase, count in Counter(test_pred).items():
+        output_lines.append(f"{clase}: {count}")
 
-with open("output.txt", "w", encoding="utf-8") as f:
+with open(os.path.join(current_dir, "output_Kaggle.txt"), "w", encoding="utf-8") as f:
     for line in output_lines:
         f.write(line + "\n")

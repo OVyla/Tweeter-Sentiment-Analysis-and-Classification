@@ -9,7 +9,8 @@ from sklearn.metrics import classification_report
 
 # --- CONFIGURATION ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, '..', '..', 'DATASETS', 'SPLIT')
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', '..'))
+DATA_PATH = os.path.join(PROJECT_ROOT, 'DATASETS', 'SPLIT')
 
 # !!! CRITICAL: SVM is slow. We use a small sample for Tuning !!!
 # 20,000 is enough to find the best 'C' and 'kernel'

@@ -3,17 +3,25 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../../'))
+
+if project_root not in sys.path:
+    sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+
 import vector_representation as vr
 from sklearn.preprocessing import LabelEncoder
 
 # Load vectorized data
-X_train, X_val, X_test, _ = vr.load_tfidf(prefix="./VECTORES/tfidf")
+vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+X_train, X_val, X_test, _ = vr.load_tfidf(prefix=vectors_path)
 
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-train = pd.read_csv(os.path.join(base_dir, 'twitter_trainBALANCED.csv')).sample(frac=0.05, random_state=42)
-val = pd.read_csv(os.path.join(base_dir, 'twitter_valBALANCED.csv')).sample(frac=0.05, random_state=42)
-test = pd.read_csv(os.path.join(base_dir, 'twitter_testBALANCED.csv')).sample(frac=0.05, random_state=42)
+datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+train = pd.read_csv(os.path.join(datasets_dir, 'twitter_trainBALANCED.csv')).sample(frac=0.05, random_state=42)
+val = pd.read_csv(os.path.join(datasets_dir, 'twitter_valBALANCED.csv')).sample(frac=0.05, random_state=42)
+test = pd.read_csv(os.path.join(datasets_dir, 'twitter_testBALANCED.csv')).sample(frac=0.05, random_state=42)
 y_train = train['label'].reset_index(drop=True)
 y_val = val['label'].reset_index(drop=True)
 y_test = test['label'].reset_index(drop=True)
@@ -76,7 +84,7 @@ for param, values in param_grid.items():
 
 # Guardar resultados
 results_df = pd.DataFrame(results, columns=['param', 'value', 'train_accuracy', 'test_accuracy'])
-results_df.to_csv('knn_param_individual_results.csv', index=False)
+results_df.to_csv(os.path.join(current_dir, 'knn_param_individual_results.csv'), index=False)
 
 
 # Graficar resultados
@@ -96,7 +104,7 @@ for param in cat_params:
     plt.ylim(0, 1)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f'knn_bar_{param}_train_test.png')
+    plt.savefig(os.path.join(current_dir, f'knn_bar_{param}_train_test.png'))
     plt.close()
     print(f'Guardada gráfica de barras para {param}: knn_bar_{param}_train_test.png')
 
@@ -111,7 +119,7 @@ for param in num_params:
     plt.ylim(0, 1)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f'knn_line_{param}_train_test.png')
+    plt.savefig(os.path.join(current_dir, f'knn_line_{param}_train_test.png'))
     plt.close()
     print(f'Guardada gráfica de línea para {param}: knn_line_{param}_train_test.png')
 
