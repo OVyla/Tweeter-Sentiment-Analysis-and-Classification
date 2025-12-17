@@ -5,19 +5,24 @@ import joblib
 import sys
 import os
 
+import sys
+import os
+
+# --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
+# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '..'))
+while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
+    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
+        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+        break
+    current_dir = os.path.dirname(current_dir)
+# -----------------------------------------
 
-if project_root not in sys.path:
-    sys.path.append(project_root)
-sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
-sys.path.append(os.path.join(project_root, 'MODELS', 'LogisticRegression'))
-
-import logistic_regression as lr
 import vector_representation as vr
 
 # 1. Cargar datasets
 datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+# train loaded inside vr usually, but keeping local ref if needed, though y_train comes from vr
 train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
 
 external_csv_path = os.path.join(current_dir, "external_clean_balanced.csv")
@@ -30,15 +35,17 @@ else:
     print("Warning: external_clean_balanced.csv not found.")
     df_kaggle = pd.DataFrame(columns=['text', 'label'])
 
-# 2. Cargar vectores TF-IDF ya guardados
-vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
-X_train, _, _, _ = vr.load_tfidf(prefix=vectors_path)
-y_train = train['label']
+# 2. Cargar vectores TF-IDF ya guardados (via load_and_vectorize_splits)
+data = vr.load_and_vectorize_splits(method='TFIDF')
+X_train = data['X_train']
+# X_val = data['X_val'] # Unused here
+# X_test_original = data['X_test'] # Unused here
+y_train = data['y_train']
+vectorizer = data['vectorizer']
 
 # 3. Vectorizar el test externo usando el mismo vectorizador
-vectorizer_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf_vectorizer.pkl')
-if os.path.exists(vectorizer_path) and not df_kaggle.empty:
-    vectorizer = joblib.load(vectorizer_path)
+if not df_kaggle.empty and vectorizer is not None:
+    # vectorizer loaded from cache/calc
     X_test = vectorizer.transform(df_kaggle.iloc[:, 0])
     y_test = df_kaggle.iloc[:, 1]
 else:

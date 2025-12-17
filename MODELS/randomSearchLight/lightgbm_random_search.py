@@ -16,14 +16,20 @@ import time
 import warnings
 warnings.filterwarnings('ignore')
 
+import sys
+import os
+
+# --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
+# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '../../'))
+while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
+    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
+        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+        break
+    current_dir = os.path.dirname(current_dir)
+# -----------------------------------------
 
-if project_root not in sys.path:
-    sys.path.append(project_root)
-sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
-
-from vector_representation import load_tfidf
+import vector_representation as vr
 
 try:
     from lightgbm import LGBMClassifier
@@ -38,20 +44,15 @@ print("LIGHTGBM RANDOM SEARCH - HIPERPARAMETER TUNING")
 print("="*80)
 
 # Cargar datos
-print("\n[PASO 1/5] Cargando CSV...")
-datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
-train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
-val = pd.read_csv(os.path.join(datasets_dir, "twitter_valBALANCED.csv"))
-test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
-print("  ✓ CSVs cargados")
-
-print("\n[PASO 2/5] Cargando vectores TF-IDF...")
-vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
-X_train, X_val, X_test, _ = load_tfidf(prefix=vectors_path)
-y_train = train['label']
-y_val = val['label']
-y_test = test['label']
-print("  ✓ Vectores cargados")
+print("\n[PASO 1-2/5] Cargando datos y vectores...")
+data = vr.load_and_vectorize_splits(method='TFIDF')
+X_train = data['X_train']
+X_val = data['X_val']
+X_test = data['X_test']
+y_train = pd.Series(data['y_train'])
+y_val = pd.Series(data['y_val'])
+y_test = pd.Series(data['y_test'])
+print("  ✓ Datos cargados")
 
 # Combinar train + val para modelo FINAL
 from scipy.sparse import vstack

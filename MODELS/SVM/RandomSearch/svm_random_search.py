@@ -16,27 +16,38 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '../../../'))
+import sys
+import os
 
-if project_root not in sys.path:
-    sys.path.append(project_root)
-sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+# --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
+# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
+    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
+        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+        break
+    current_dir = os.path.dirname(current_dir)
+# -----------------------------------------
 
 import vector_representation as vr
 
 # Cargar dataset
-print("Cargando dataset...")
-datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
-train = pd.read_csv(os.path.join(datasets_dir, 'twitter_trainBALANCED.csv')).sample(frac=0.3, random_state=42)
-test = pd.read_csv(os.path.join(datasets_dir, 'twitter_testBALANCED.csv')).sample(frac=0.3, random_state=42)
+print("Cargando dataset y vectores...")
+data = vr.load_and_vectorize_splits(method='TFIDF')
+X_train_full = data['X_train']
+X_test_full = data['X_test']
+y_train_full = pd.Series(data['y_train']) # Convertir a Series per compatibilitat index
+y_test_full = pd.Series(data['y_test'])
 
-vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
-X_train_full, _, X_test_full, _ = vr.load_tfidf(prefix=vectors_path)
-X_train = X_train_full[train.index]
-X_test = X_test_full[test.index]
-y_train = train['label']
-y_test = test['label']
+# Sampling for tuning (30%)
+print("Muestreando 30%...")
+train_sample = y_train_full.sample(frac=0.3, random_state=42)
+test_sample = y_test_full.sample(frac=0.3, random_state=42)
+
+X_train = X_train_full[train_sample.index]
+X_test = X_test_full[test_sample.index]
+y_train = train_sample
+y_test = test_sample
 
 print(f"Train set: {X_train.shape}, Test set: {X_test.shape}")
 

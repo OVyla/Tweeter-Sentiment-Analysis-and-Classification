@@ -3,13 +3,20 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import sys
 
 # ============================
 # CONFIGURACIÓ DE RUTES
 # ============================
+# Trobar l'arrel del projecte buscant la carpeta 'DATASETS' o 'MODELS' cap amunt
+current = os.path.dirname(os.path.abspath(__file__))
+while not os.path.exists(os.path.join(current, 'DATASETS')) and current != os.path.dirname(current):
+    current = os.path.dirname(current)
+project_root = current
+
 # Assegura't que el fitxer output.txt estigui en aquesta ruta
-PATH_INPUT_FILE = os.path.join("MODELS", "NaiveBayes", "output.txt")
-PATH_OUTPUT_DIR = os.path.join("GRAFIQUES", "NaiveBayes")
+PATH_INPUT_FILE = os.path.join(project_root, "MODELS", "NaiveBayes", "output.txt")
+PATH_OUTPUT_DIR = os.path.join(project_root, "GRAFIQUES", "NaiveBayes")
 PATH_OUTPUT_IMAGE = os.path.join(PATH_OUTPUT_DIR, "benchmark_nb_accuracy_comparison.png")
 
 # ============================

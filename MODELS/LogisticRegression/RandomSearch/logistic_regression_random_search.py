@@ -8,8 +8,19 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')  # Ignorar todos los warnings
 
-# Añadir MODELOS al path para importar vector_representation
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sys
+import os
+
+# --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
+# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
+    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
+        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+        break
+    current_dir = os.path.dirname(current_dir)
+# -----------------------------------------
+
 import vector_representation as vr
 
 # ==========================================
@@ -31,19 +42,20 @@ def main():
     
     start_time = time.time()
     
-    # 1. Cargar datasets
-    print("\n[1/5] Cargando datasets...")
-    base_path = "../../"
-    train = pd.read_csv(base_path + "twitter_trainBALANCED.csv")
-    val = pd.read_csv(base_path + "twitter_valBALANCED.csv")
-    test = pd.read_csv(base_path + "twitter_testBALANCED.csv")
+    # 1. Cargar datasets y vectores
+    print("\n[1/2] Cargando datasets y vectores TF-IDF...")
+    data = vr.load_and_vectorize_splits(method='TFIDF')
+    X_train_full = data['X_train']
+    X_val_full = data['X_val']
+    X_test_full = data['X_test']
+    y_train_full = data['y_train']
+    y_val_full = data['y_val']
+    y_test_full = data['y_test']
     
-    # 2. Cargar vectores TF-IDF
-    print("[2/5] Cargando vectores TF-IDF...")
-    X_train_full, X_val_full, X_test_full, _ = vr.load_tfidf(prefix=base_path + "VECTORES/tfidf")
-    y_train_full = train['label']
-    y_val_full = val['label']
-    y_test_full = test['label']
+    # Convertir a Series si cal (per compatibilitat amb .iloc posterior)
+    y_train_full = pd.Series(y_train_full)
+    y_val_full = pd.Series(y_val_full)
+    y_test_full = pd.Series(y_test_full)
     
     # 3. Muestrear 30% para tuning (más rápido)
     print(f"[3/5] Muestreando {int(SAMPLE_SIZE*100)}% del dataset para tuning...")

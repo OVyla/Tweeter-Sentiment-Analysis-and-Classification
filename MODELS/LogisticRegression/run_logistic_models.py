@@ -5,7 +5,13 @@ import sys
 import os
 from joblib import dump, load
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+# Trobar l'arrel del projecte buscant la carpeta 'DATASETS' o 'MODELS' cap amunt
+current = os.path.dirname(os.path.abspath(__file__))
+while not os.path.exists(os.path.join(current, 'DATASETS')) and current != os.path.dirname(current):
+    current = os.path.dirname(current)
+project_root = current
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir')) # Per a vector_representation
+sys.path.append(project_root)
 
 
 from AnalizarLimpiarDividir.vector_representation import load_and_vectorize_splits

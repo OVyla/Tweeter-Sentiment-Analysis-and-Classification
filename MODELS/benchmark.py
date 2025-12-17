@@ -48,9 +48,14 @@ def main():
     """
     print("--- STARTING COMPREHENSIVE MODEL BENCHMARK ---")
     
+    # Trobar l'arrel del projecte buscant la carpeta 'DATASETS' o 'MODELS' cap amunt
+    current = os.path.dirname(os.path.abspath(__file__))
+    while not os.path.exists(os.path.join(current, 'DATASETS')) and current != os.path.dirname(current):
+        current = os.path.dirname(current)
+    project_root = current
+    
     # Get the absolute path to the MODELS directory, where this script is located
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(base_dir)
     output_path = os.path.join(project_root, OUTPUT_FILE) # Save benchmark.txt in the project root
 
     # Initialize the output file

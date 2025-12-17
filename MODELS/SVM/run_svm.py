@@ -10,7 +10,13 @@ from joblib import dump, load
 
 # Aquest fitxer està (probablement) a MODELS/SVM/run_svm.py
 # Afegim el root del projecte (dos nivells amunt) al sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+# Trobar l'arrel del projecte buscant la carpeta 'DATASETS' o 'MODELS' cap amunt
+current = os.path.dirname(os.path.abspath(__file__))
+while not os.path.exists(os.path.join(current, 'DATASETS')) and current != os.path.dirname(current):
+    current = os.path.dirname(current)
+project_root = current
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir')) # Per a vector_representation
+sys.path.append(project_root)
 
 # --- Imports del projecte ---
 from AnalizarLimpiarDividir.vector_representation import load_and_vectorize_splits

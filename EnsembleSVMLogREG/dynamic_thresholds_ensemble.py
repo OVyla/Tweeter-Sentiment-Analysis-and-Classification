@@ -14,15 +14,21 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '..'))
+import sys
+import os
 
-# Añadir MODELOS al path
-if project_root not in sys.path:
-    sys.path.append(project_root)
-sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+# --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
+# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
+    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
+        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+        break
+    current_dir = os.path.dirname(current_dir)
+# -----------------------------------------
 
 import vector_representation as vr
+project_root = current_dir
 
 OUTPUT_FILE = os.path.join(current_dir, "dynamic_thresholds_ensemble_results.txt")
 

@@ -7,9 +7,13 @@ import os
 import joblib
 
 # Añadir la ruta al vector_representation si es necesario
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '../..'))
-sys.path.insert(0, project_root)
+# Trobar l'arrel del projecte buscant la carpeta 'DATASETS' o 'MODELS' cap amunt
+current = os.path.dirname(os.path.abspath(__file__))
+while not os.path.exists(os.path.join(current, 'DATASETS')) and current != os.path.dirname(current):
+    current = os.path.dirname(current)
+project_root = current
+sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir')) # Per a vector_representation
+sys.path.append(project_root)
 
 from AnalizarLimpiarDividir.vector_representation import load_and_vectorize_splits
 from MODELS.DecisionTree.decision_tree_model import train_decision_tree

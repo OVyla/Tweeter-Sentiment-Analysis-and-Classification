@@ -8,13 +8,18 @@ import sys, os
 import warnings
 warnings.filterwarnings('ignore')
 
-# Añadir MODELOS al path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '../../../'))
+import sys
+import os
 
-if project_root not in sys.path:
-    sys.path.append(project_root)
-sys.path.append(os.path.join(project_root, 'AnalizarLimpiarDividir'))
+# --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
+# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
+    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
+        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+        break
+    current_dir = os.path.dirname(current_dir)
+# -----------------------------------------
 
 import vector_representation as vr
 
@@ -39,18 +44,26 @@ def main():
     
     # 1. Cargar datasets
     print("\n[1/5] Cargando datasets...")
-    datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
-    train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
-    val = pd.read_csv(os.path.join(datasets_dir, "twitter_valBALANCED.csv"))
-    test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
+    # (Ya se carga internamente en load_and_vectorize_splits)
     
     # 2. Cargar vectores TF-IDF
     print("[2/5] Cargando vectores TF-IDF...")
-    vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
-    X_train_full, X_val_full, X_test_full, _ = vr.load_tfidf(prefix=vectors_path)
-    y_train_full = train['label']
-    y_val_full = val['label']
-    y_test_full = test['label']
+    data = vr.load_and_vectorize_splits(method='TFIDF')
+    X_train_full = data['X_train']
+    X_val_full = data['X_val']
+    X_test_full = data['X_test']
+    y_train_full = data['y_train'] # Es un numpy array segons vr.py
+    y_val_full = data['y_val']
+    y_test_full = data['y_test']
+
+    # Convertir a Series si el codi de baix espera .iloc
+    # vr.load_and_vectorize_splits retorna .values (numpy array) per y_train
+    # Però el codi de baix fa: y_train_full.iloc[indices]
+    # Així que convertim a Series per compatibilitat o canviem el codi de baix.
+    # Convertirem a Series per assegurar compatibilitat amb .iloc
+    y_train_full = pd.Series(y_train_full)
+    y_val_full = pd.Series(y_val_full)
+    y_test_full = pd.Series(y_test_full)
     
     # 3. Muestrear para tuning
     print(f"[3/5] Muestreando {int(SAMPLE_SIZE*100)}% del dataset para tuning...")
