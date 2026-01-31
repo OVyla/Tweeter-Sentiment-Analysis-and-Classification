@@ -4,7 +4,7 @@ An advanced machine learning project for sentiment classification of tweets, fea
 
 Developed for the "Aprenentatge Computacional" (Computational Learning) course at Universitat Autònoma de Barcelona (UAB).
 
-![Web App Screenshot](https://via.placeholder.com/800x400?text=Web+App+Screenshot)
+https://tweeter-sentiment-analysis-and.onrender.com
 
 ## 📌 Features
 
@@ -96,4 +96,4 @@ Results and plots will be generated in the `plots/` directory.
 The project explores various vectorization techniques (TF-IDF vs Bag of Words) and model architectures. Detailed benchmarks and ROC curves can be found in the `plots/` directory.
 
 ---
-*Created by Oriol*
+
