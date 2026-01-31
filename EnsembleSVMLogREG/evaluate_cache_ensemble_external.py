@@ -18,11 +18,11 @@ import sys
 import os
 
 # --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
-# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
+# Aquest codi puja nivells fins a trobar la carpeta 'preprocessing'
 current_dir = os.path.dirname(os.path.abspath(__file__))
 while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
-    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
-        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+    if os.path.exists(os.path.join(current_dir, 'preprocessing')):
+        sys.path.append(os.path.join(current_dir, 'preprocessing'))
         break
     current_dir = os.path.dirname(current_dir)
 # -----------------------------------------
@@ -38,15 +38,15 @@ print("="*80)
 
 # 1. Cargar external_clean_balanced.csv
 print("\n[1/3] Cargando external_clean_balanced.csv...")
-# Asumiendo que está en la raíz del proyecto o en DATASETS. Ajustar según ubicación real.
+# Asumiendo que está en la raíz del proyecto o en data. Ajustar según ubicación real.
 external_csv_path = os.path.join(project_root, "external_clean_balanced.csv")
 if not os.path.exists(external_csv_path):
-     external_csv_path = os.path.join(project_root, "DATASETS", "external_clean_balanced.csv")
+     external_csv_path = os.path.join(project_root, "data", "external_clean_balanced.csv")
 
 if os.path.exists(external_csv_path):
     external = pd.read_csv(external_csv_path)
 else:
-    print(f"Error: No se encuentra 'external_clean_balanced.csv' en {project_root} ni en DATASETS.")
+    print(f"Error: No se encuentra 'external_clean_balanced.csv' en {project_root} ni en data.")
     # Fallback para evitar crash inmediato si es solo prueba
     external = pd.DataFrame(columns=['text', 'label'])
 
@@ -55,7 +55,7 @@ else:
 print("[2/3] Cargando vectorizador TF-IDF y transformando external...")
 # Asume que el archivo tiene una columna 'text' y 'label'
 
-vectorizer_path = os.path.join(project_root, "DATASETS", "VECTORS", "tfidf_vectorizer.pkl")
+vectorizer_path = os.path.join(project_root, "data", "VECTORS", "tfidf_vectorizer.pkl")
 vectorizer = joblib.load(vectorizer_path)
 if not external.empty:
     X_external = vectorizer.transform(external['text'])

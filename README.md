@@ -1,147 +1,99 @@
-# Twitter Sentiment Analysis and Classification
+# Twitter Sentiment Analysis
 
-This project, developed for the "Aprenentatge Computacional" (Computational Learning) course at Universitat Autònoma de Barcelona (UAB), performs sentiment analysis and classification on Twitter data. It explores various machine learning models to classify tweets into 'positive', 'neutral', or 'negative' categories.
+An advanced machine learning project for sentiment classification of tweets, featuring a comprehensive benchmarking of models and a modern web interface.
 
-## Project Structure
+Developed for the "Aprenentatge Computacional" (Computational Learning) course at Universitat Autònoma de Barcelona (UAB).
 
-The repository is organized as follows:
+![Web App Screenshot](https://via.placeholder.com/800x400?text=Web+App+Screenshot)
+
+## 📌 Features
+
+*   **Robust Preprocessing**: Custom cleaning pipeline including cleaning, lemmatization, and noise removal.
+*   **Diverse Models**: Implementation and benchmarking of:
+    *   Logistic Regression (TF-IDF & BoW)
+    *   Support Vector Machines (SVM) - Linear & Kernel
+    *   Naive Bayes (Multinomial, Bernoulli, Complement)
+    *   Random Forest & Decision Trees
+    *   Ensemble Methods (Stacking, Voting, LightGBM)
+*   **Web Application**: A premium, responsive FastAPI web app to demonstrate the model in real-time.
+*   **Bilingual Support**: The web interface supports both English and Catalan.
+
+## 📂 Project Structure
 
 ```
 .
-├── AnalizarLimpiarDividir/ # Scripts for data processing
-│   ├── Analizardataset.py
-│   ├── clean_dataset.py
-│   ├── IMPORTARDATASETGRANDE.py
-│   └── SplitDataset.py
-├── DATASETS/                 # Raw and processed data
-│   ├── twitter_balancedCLEAN.csv
-│   └── ...
-├── GRAFIQUES/                # Generated plots and visualizations
-│   ├── BENCHMARK/
-│   ├── DecisionTree/
-│   ├── EnsembleBoostingLightGBM/
-│   ├── NaiveBayes/
-│   ├── RandomForest/
-│   ├── SVM/
-│   ├── WORDCLOUD/
-│   ├── analisisDataset/
-│   └── logreg/
-│   └── parametres_KNN
-├── KaggleBinario/             # Try binary dataset
-│   ├── clean_and_balance_kaggleBinario.py
-│   ├── output_Kaggle.txt
-│   └── run_kaggleLogReg.py
-├── MODELS/                   # ML model implementations
-│   ├── DecisionTree/
-│   ├── KNN/
-│   ├── LogisticRegression/
-│   ├── NaiveBayes/
-│   ├── RandomForest/
-│   ├── SVM/
-│   ├── TUNNING/
-│   ├── ALL_MODELS_SUMMARY.txt
-│   ├── analize_benchmark.py
-│   ├── benchmark.py
-│   └── generate_benchmark_and_roc.py
-├── requirements.txt          # Project dependencies
-└── README.md                 # This file
+├── app/                  # Web Application (FastAPI + Frontend)
+├── data/                 # Datasets and cached vectors
+├── models/               # Model implementations (SVM, LogReg, etc.)
+├── plots/                # Generated visualizations and analysis
+├── preprocessing/        # Data cleaning and splitting scripts
+├── experiments/          # Experimental scripts
+└── requirements.txt      # Dependencies
 ```
 
-## Dataset
+## 🚀 Getting Started
 
-*   **Source**: The dataset is sourced from [Hugging Face Datasets](https://huggingface.co/datasets/bdstar/Tweets-Sentiment-Analysis) (train split).
-*   **Description**: It contains over 1.5 million tweets, each labeled with 'positive', 'neutral', or 'negative' sentiment.
-*   **Preprocessing**: The data cleaning process (`clean_dataset.py`) involves:
-    *   Lowercasing text.
-    *   Removing URLs, user mentions, and hashtags.
-    *   Lemmatization using NLTK's WordNet.
-    *   Removal of common English stopwords.
-
-## Getting Started
-
-Follow these instructions to set up and run the project locally.
-
-### 1. Prerequisites
+### Prerequisites
 
 *   Python 3.8+
 *   Git
 
-### 2. Installation
+### Installation
 
-Clone the repository to your local machine:
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/your-username/Tweeter-Sentiment-Analysis-and-Classification.git
+    cd Tweeter-Sentiment-Analysis-and-Classification
+    ```
+
+2.  **Create a virtual environment**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3.  **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Download NLTK data**:
+    ```python
+    import nltk
+    nltk.download('punkt')
+    nltk.download('wordnet')
+    nltk.download('stopwords')
+    ```
+
+## 🖥️ Running the Web App
+
+To launch the interactive web interface:
+
+1.  Ensure you have trained the models (or use the provided pre-trained ones).
+2.  Run the application:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+3.  Open your browser and navigate to:
+    `http://localhost:8000`
+
+## 🧠 Training Models
+
+To train the models from scratch:
+
 ```bash
-git clone https://github.com/your-username/Tweeter-Sentiment-Analysis-and-Classification.git
-cd Tweeter-Sentiment-Analysis-and-Classification
+# Logistic Regression Benchmark
+python models/LogisticRegression/run_logistic_models.py
+
+# SVM Benchmark
+python models/SVM/run_svm.py
 ```
 
-Create and activate a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-```
+Results and plots will be generated in the `plots/` directory.
 
-Install the required dependencies:
-```bash
-pip install -r requirements.txt
-```
+## 📊 Results
 
-Download the NLTK data required for preprocessing:
-```python
-import nltk
-nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('stopwords')
-```
+The project explores various vectorization techniques (TF-IDF vs Bag of Words) and model architectures. Detailed benchmarks and ROC curves can be found in the `plots/` directory.
 
-### 3. Data Preparation
-
-First, download the original dataset by running the following script. This will fetch the data from Hugging Face and save it in the `DATASETS` directory.
-```bash
-python AnalizarLimpiarDividir/IMPORTARDATASETGRANDE.py
-```
-
-Next, clean and preprocess the dataset:
-```bash
-python AnalizarLimpiarDividir/clean_dataset.py
-```
-
-Finally, split the cleaned data into training, validation, and test sets:
-```bash
-python AnalizarLimpiarDividir/SplitDataset.py
-```
-
-## Usage
-
-The project includes implementations for several machine learning models.
-
-### Running Models
-
-You can train and evaluate the models by running their respective `run` scripts. For example, to run the Logistic Regression model:
-```bash
-python MODELS/LogisticRegression/run.py
-```
-
-Similarly, for other models:
-```bash
-# Support Vector Machine
-python MODELS/SVM/run_svm.py
-
-# Random Forest
-python MODELS/RandomForest/run_random_forest.py
-```
-
-### Benchmarking
-
-The scripts generate performance metrics and save them in files like `analisis_resultats.txt` and `benchmark_output.txt`. The `PLOTS` directory contains visualizations comparing the accuracy, F1-score, and execution time of the different models.
-
-## Models Explored
-
-*   **Logistic Regression**: Implemented with different vector representations (Bag-of-Words, TF-IDF) and multiclass strategies (One-vs-Rest, One-vs-One).
-*   **Support Vector Machines (SVM)**: Both `LinearSVC` and `SVC` with different kernels are tested.
-*   **Ensemble Methods**:
-    *   Random Forest
-    *   AdaBoost
-    *   Gradient Boosting
-    *   LightGBM
-
-Results, including confusion matrices, ROC curves, and validation curves, are saved in the `GRAFIQUES` directory.
+---
+*Created by Oriol*

@@ -20,11 +20,11 @@ import sys
 import os
 
 # --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
-# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
+# Aquest codi puja nivells fins a trobar la carpeta 'preprocessing'
 current_dir = os.path.dirname(os.path.abspath(__file__))
 while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
-    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
-        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+    if os.path.exists(os.path.join(current_dir, 'preprocessing')):
+        sys.path.append(os.path.join(current_dir, 'preprocessing'))
         break
     current_dir = os.path.dirname(current_dir)
 # -----------------------------------------
@@ -40,13 +40,13 @@ print("="*80)
 
 # 1. Cargar datasets
 print("\n[1/4] Cargando datasets...")
-datasets_dir = os.path.join(project_root, 'DATASETS', 'SPLIT')
+datasets_dir = os.path.join(project_root, 'data', 'SPLIT')
 train = pd.read_csv(os.path.join(datasets_dir, "twitter_trainBALANCED.csv"))
 test = pd.read_csv(os.path.join(datasets_dir, "twitter_testBALANCED.csv"))
 
 # 2. Cargar vectores TF-IDF
 print("[2/4] Cargando vectores TF-IDF...")
-vectors_path = os.path.join(project_root, 'DATASETS', 'VECTORS', 'tfidf')
+vectors_path = os.path.join(project_root, 'data', 'VECTORS', 'tfidf')
 X_train, X_val, X_test, _ = vr.load_tfidf(prefix=vectors_path)
 y_train = train['label']
 y_test = test['label']

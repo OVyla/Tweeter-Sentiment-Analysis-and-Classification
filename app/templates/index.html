@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Sentiment Analysis</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="background-mesh"></div>
+
+    <header>
+        <div class="logo">
+            <i class="fa-brands fa-twitter"></i> Sentiment<span>AI</span>
+        </div>
+        <div class="lang-switch">
+            <button id="btn-en" class="active">EN</button>
+            <button id="btn-ca">CA</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1 id="title">Analyze Tweet Sentiment<br>with AI</h1>
+            <p id="subtitle">Input any text and let our advanced machine learning models determine if the sentiment is
+                positive, neutral, or negative.</p>
+        </section>
+
+        <section class="analyzer-card">
+            <textarea id="tweet-input"
+                placeholder="Type or paste a tweet here... (e.g. 'This movie was absolutely fantastic!')"></textarea>
+
+            <div class="actions">
+                <button id="analyze-btn">
+                    <span id="analyze-text">Analyze Sentiment</span>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <div id="loader" class="loader hidden"></div>
+            </div>
+
+            <div id="result-container" class="result hidden">
+                <div class="sentiment-icon" id="sentiment-icon"></div>
+                <h2 id="sentiment-label"></h2>
+                <div class="score-bar">
+                    <div class="fill" id="score-fill"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works">
+            <h2 class="section-title"><i class="fa-solid fa-microchip"></i> <span id="how-title">How It Works</span>
+            </h2>
+
+            <div class="pipeline-container">
+                <div class="pipeline-step">
+                    <div class="icon-box">
+                        <i class="fa-brands fa-twitter"></i>
+                    </div>
+                    <p>Input Tweet</p>
+                </div>
+                <div class="arrow">
+                    <i class="fa-solid fa-angle-right"></i>
+                    <div class="pulse"></div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-filter"></i>
+                    </div>
+                    <p>Preprocessing</p>
+                    <span class="tooltip">Noise Removal, Lemmatization</span>
+                </div>
+                <div class="arrow">
+                    <i class="fa-solid fa-angle-right"></i>
+                    <div class="pulse"></div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <p>Vectorization</p>
+                    <span class="tooltip">TF-IDF Matrix</span>
+                </div>
+                <div class="arrow">
+                    <i class="fa-solid fa-angle-right"></i>
+                    <div class="pulse"></div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="icon-box model-icon">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <p>Logistic Regression</p>
+                </div>
+                <div class="arrow">
+                    <i class="fa-solid fa-angle-right"></i>
+                    <div class="pulse"></div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="icon-box result-icon">
+                        <i class="fa-solid fa-face-smile"></i>
+                    </div>
+                    <p>Prediction</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="performance">
+            <h2 class="section-title"><i class="fa-solid fa-tachograph-digital"></i> <span id="perf-title">Model
+                    Performance</span></h2>
+            <p class="section-subtitle" id="perf-subtitle">Benchmarking against other models on 1.5M tweets</p>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3 id="acc-chart-title">Accuracy Comparison</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 id="f1-chart-title">F1-Score Comparison</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="f1Chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-brain"></i> <span id="model-title">The Model</span></h3>
+                <p id="model-desc">Powered by Logistic Regression with TF-IDF vectorization, trained on over 1.5 million
+                    tweets for high-speed, accurate classification.</p>
+            </div>
+            <div class="info-card">
+                <h3><i class="fa-solid fa-code"></i> <span id="tech-title">Tech Stack</span></h3>
+                <p id="tech-desc">Built with Python, Scikit-learn, and FastAPI. Designed for performance and
+                    scalability.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Developed for UAB - Computational Learning</p>
+    </footer>
+
+    <script src="/static/js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+================================================================================
+RANDOM FOREST - RANDOM SEARCH (TODOS LOS PARÁMETROS)
+================================================================================
+
+Tiempo total de ejecución: 46 min 46.11 s
+Iteraciones de RandomizedSearchCV: 20
+K-fold cross-validation: 2
+Dataset para tuning: 5% (54744 muestras)
+Dataset para evaluación: 40% (328468 muestras)
+
+--------------------------------------------------------------------------------
+MEJORES PARÁMETROS ENCONTRADOS
+--------------------------------------------------------------------------------
+  bootstrap: False
+  class_weight: balanced_subsample
+  criterion: entropy
+  max_depth: None
+  max_features: sqrt
+  min_samples_leaf: 4
+  min_samples_split: 2
+  n_estimators: 200
+
+  CV Score (5% dataset): 0.6942
+Dataset para evaluación: 30% (328468 muestras)
+
+--------------------------------------------------------------------------------
+RESULTADOS EN 30% DE LOS data
+--------------------------------------------------------------------------------
+Train Accuracy (30%): 0.8046
+Validation Accuracy (30%): 0.7273
+Test Accuracy (30%): 0.7264
+
+--------------------------------------------------------------------------------
+TRAIN CLASSIFICATION REPORT (30%)
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.82      0.82      0.82    111372
+     neutral       0.75      0.82      0.78    108244
+    positive       0.86      0.78      0.81    108852
+
+    accuracy                           0.80    328468
+   macro avg       0.81      0.80      0.80    328468
+weighted avg       0.81      0.80      0.81    328468
+
+--------------------------------------------------------------------------------
+VALIDATION CLASSIFICATION REPORT (30%)
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.74      0.75      0.74     13953
+     neutral       0.66      0.73      0.69     13449
+    positive       0.80      0.71      0.75     13656
+
+    accuracy                           0.73     41058
+   macro avg       0.73      0.73      0.73     41058
+weighted avg       0.73      0.73      0.73     41058
+
+--------------------------------------------------------------------------------
+TEST CLASSIFICATION REPORT (30%)
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.74      0.75      0.74     13906
+     neutral       0.66      0.73      0.69     13525
+    positive       0.80      0.70      0.75     13627
+
+    accuracy                           0.73     41058
+   macro avg       0.73      0.73      0.73     41058
+weighted avg       0.73      0.73      0.73     41058
+
+--------------------------------------------------------------------------------
+TOP 20 FEATURES MÁS IMPORTANTES
+--------------------------------------------------------------------------------
+ 1. Feature 36384: 0.028216
+ 2. Feature 22287: 0.022162
+ 3. Feature 54219: 0.017791
+ 4. Feature 23057: 0.015298
+ 5. Feature 45602: 0.014488
+ 6. Feature 24450: 0.014139
+ 7. Feature 38270: 0.013549
+ 8. Feature 60927: 0.011669
+ 9. Feature 5976: 0.010605
+10. Feature 59638: 0.009774
+11. Feature 24273: 0.009769
+12. Feature 20456: 0.008871
+13. Feature 44846: 0.008515
+14. Feature 77539: 0.008515
+15. Feature 6379: 0.008361
+16. Feature 78039: 0.008348
+17. Feature 42746: 0.007800
+18. Feature 56237: 0.007363
+19. Feature 2583: 0.006617
+20. Feature 58239: 0.006211

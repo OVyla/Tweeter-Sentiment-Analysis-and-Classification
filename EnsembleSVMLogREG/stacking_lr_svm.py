@@ -29,11 +29,11 @@ import sys
 import os
 
 # --- INICI BLOC AUTO-CONFIGURACIÓ PATH ---
-# Aquest codi puja nivells fins a trobar la carpeta 'AnalizarLimpiarDividir'
+# Aquest codi puja nivells fins a trobar la carpeta 'preprocessing'
 current_dir = os.path.dirname(os.path.abspath(__file__))
 while current_dir != os.path.dirname(current_dir):  # Evita bucle infinit al root del sistema
-    if os.path.exists(os.path.join(current_dir, 'AnalizarLimpiarDividir')):
-        sys.path.append(os.path.join(current_dir, 'AnalizarLimpiarDividir'))
+    if os.path.exists(os.path.join(current_dir, 'preprocessing')):
+        sys.path.append(os.path.join(current_dir, 'preprocessing'))
         break
     current_dir = os.path.dirname(current_dir)
 # -----------------------------------------

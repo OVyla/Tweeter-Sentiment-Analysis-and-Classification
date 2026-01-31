@@ -5,15 +5,15 @@ import seaborn as sns
 import os
 import sys
 
-# Trobar l'arrel del projecte buscant la carpeta 'DATASETS' o 'MODELS' cap amunt
+# Trobar l'arrel del projecte buscant la carpeta 'data' o 'models' cap amunt
 current = os.path.dirname(os.path.abspath(__file__))
-while not os.path.exists(os.path.join(current, 'DATASETS')) and current != os.path.dirname(current):
+while not os.path.exists(os.path.join(current, 'data')) and current != os.path.dirname(current):
     current = os.path.dirname(current)
 project_root = current
 
 # CONFIGURACIÓ
 INPUT_FILE = os.path.join(project_root, "benchmark.txt")
-OUTPUT_DIR = os.path.join(project_root, "GRAFIQUES", "Benchmark")
+OUTPUT_DIR = os.path.join(project_root, "plots", "Benchmark")
 
 def parse_benchmark_file(filepath):
     """

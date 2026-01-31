@@ -1,0 +1,64 @@
+================================================================================
+BERNOULLI NAIVE BAYES - RANDOM SEARCH (TODOS LOS PARÁMETROS)
+================================================================================
+
+Tiempo total de ejecución: 1 min 20.80 s
+Iteraciones de RandomizedSearchCV: 50
+K-fold cross-validation: 3
+Dataset para tuning: 20% (218979 muestras)
+Dataset para evaluación: 100% (1094896 muestras)
+
+--------------------------------------------------------------------------------
+MEJORES PARÁMETROS ENCONTRADOS
+--------------------------------------------------------------------------------
+  alpha: 0.05298316906283713
+  binarize: 0.125
+  fit_prior: False
+
+  CV Score (20% dataset): 0.7138
+
+--------------------------------------------------------------------------------
+RESULTADOS EN data COMPLETOS (100%)
+--------------------------------------------------------------------------------
+Train Accuracy: 0.7610
+Validation Accuracy: 0.7439
+Test Accuracy: 0.7465
+
+--------------------------------------------------------------------------------
+TRAIN CLASSIFICATION REPORT
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.79      0.76      0.78    371271
+     neutral       0.68      0.80      0.74    361256
+    positive       0.84      0.72      0.77    362369
+
+    accuracy                           0.76   1094896
+   macro avg       0.77      0.76      0.76   1094896
+weighted avg       0.77      0.76      0.76   1094896
+
+--------------------------------------------------------------------------------
+VALIDATION CLASSIFICATION REPORT
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.77      0.75      0.76     46409
+     neutral       0.66      0.78      0.72     45157
+    positive       0.82      0.71      0.76     45296
+
+    accuracy                           0.74    136862
+   macro avg       0.75      0.74      0.74    136862
+weighted avg       0.75      0.74      0.75    136862
+
+--------------------------------------------------------------------------------
+TEST CLASSIFICATION REPORT
+--------------------------------------------------------------------------------
+              precision    recall  f1-score   support
+
+    negative       0.78      0.75      0.76     46409
+     neutral       0.67      0.78      0.72     45157
+    positive       0.82      0.70      0.76     45297
+
+    accuracy                           0.75    136863
+   macro avg       0.75      0.75      0.75    136863
+weighted avg       0.76      0.75      0.75    136863
